@@ -7,6 +7,7 @@
 "assets/atl_fx_1.webp": "c263887c580a239a2c1654930704e15a764cca33",
 "assets/atl_ico_1.webp": "19361fec68c44b16f260330118e34324eb1a3855",
 "assets/atl_ico_2.webp": "4f9238a5a3e6b39514e204bc3e8652f30ea69a98",
+"assets/atl_ico_3.webp": "d6fbc6c675db0d62ddf10e136b6c2588f98848d2",
 "assets/bat_adivina.webp": "c8f7531a0d7c6d536c26c0e6098dfa5ebcbb4a92",
 "assets/bat_aduanero.webp": "80e8952390b5e62dc9eeca3bcaded659fca37434",
 "assets/bat_aina.webp": "948a9bf2aecdc821106fdcec1e1792802e134d70",
@@ -413,7 +414,7 @@
 "assets/ilu_ysolde_2.webp": "9f234bdfb561cfd2eb15193e78cd456b2c2cf31e",
 "assets/ilu_ziva.webp": "757bb8a2c0778abbea2a1edd1d3c6515713e6c11",
 "assets/ilu_ziva_2.webp": "360c3ed8ee750a630c3915bcd3e591ced796597d",
-"assets/manifest.json": "d03c7a89e43cbbd1be4a6d0e82c49535b43f9d4c",
+"assets/manifest.json": "9590812ae81c7d2ac25b3870f1265ce8a5fef651",
 "assets/map_catedral_eclipse_exterior.webp": "985864e04582e1cc413089f839cbc93e09c1f6c0",
 "assets/map_catedral_eclipse_interior.webp": "7852c55ad209840e7e19a8a58d53cb55ce162cb0",
 "assets/map_catedral_eclipse_jefe.webp": "0166cc5b2594b0d3a9d5739ba2fe59f769297ac7",
@@ -490,9 +491,9 @@
 "fuentes/alegreya-sans-latin-500-normal.woff2": "005c64e2da1b0d73b57a75e0890ec6a845b0ff82",
 "fuentes/alegreya-sans-latin-700-normal.woff2": "403b09118b4c02a8a8b4749dc472e2a15caab9af",
 "index.html": "8db362e3335f40d4bcf7e2546966535c2783a120",
-"motor.js": "8364c40ae3bba035c7e674f3357a714f471f716d",
+"motor.js": "711462640be9e515d5c7f56398ed2a099adf08ea",
 "sonido.js": "61138963863ab1359042d066be4d66c97262cf1a",
 "ui.js": "ad5dda6c9b52cf6c0a09f9b730e4f60f42173656"
 },
-"v": 4
+"v": 5
 }

@@ -1572,12 +1572,15 @@
       art("m:sello_incursion", "mat", "sello_incursion", 15, "gemas", { pide: 1 }), art("x:abono", "abono", null, 40, "gemas", { agotado: save.granja.nivel + (save.granja.llaves.abono || 0) >= M.GRANJA.maxNivel })];
     // oferta de hoy: tres cosas rebajadas, una vez cada una
     var h = 7; for (var i = 0; i < HOY.length; i++) h = (h * 33 + HOY.charCodeAt(i)) >>> 0;
-    function rnd(n) { h = (h * 1664525 + 1013904223) >>> 0; return h % n; }
+    // Mezcla bien los bits antes de elegir: con la cuenta sencilla de antes, dos días seguidos caían en la misma casilla y la oferta no cambiaba nunca.
+    function rnd(n) { h = (h + 0x6D2B79F5) >>> 0; var t = Math.imul(h ^ (h >>> 15), 1 | h); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return Math.floor(((t ^ (t >>> 14)) >>> 0) / 4294967296 * n); }
+    function reb() { return [0.2, 0.25, 0.3, 0.35, 0.4, 0.5][rnd(6)]; }   // la rebaja también cambia cada día: del 20 al 50 %
     var armas = Object.keys(D.ITEMS).filter(function (k) { var it = D.ITEMS[k]; return it.oficio && it.nivel <= (reg >= 3 ? 2 : 1); }), w = armas[rnd(armas.length)];
     var o2 = objetos.filter(function (a) { return a.clase === "objeto" && (a.pide || 0) <= reg; }), ob = o2[rnd(o2.length)];
     var m2 = mats.filter(function (a) { return (a.pide || 0) <= reg; }), mt = m2[rnd(m2.length)];
-    var hoy = [art("h:arma", "item", w, D.ITEMS[w].nivel === 1 ? 900 : 2800, "oro", { rebaja: 0.3 }),
-      art("h:lote", "objeto", ob.ref, Math.round(ob.precio * 5 * 0.6), "oro", { cant: 5, rebaja: 0.4 }), art("h:mats", "mat", mt.ref, Math.round(mt.precio * 6 * 0.6), "oro", { cant: 6, rebaja: 0.4 })];
+    var r1 = reb(), r2 = reb(), r3 = reb(), nL = [3, 5, 8][rnd(3)], nM = [4, 6, 10][rnd(3)], pA = D.ITEMS[w].nivel === 1 ? 1300 : 4000;
+    var hoy = [art("h:arma", "item", w, Math.round(pA * (1 - r1) / 10) * 10, "oro", { rebaja: r1 }),
+      art("h:lote", "objeto", ob.ref, Math.round(ob.precio * nL * (1 - r2) / 10) * 10, "oro", { cant: nL, rebaja: r2 }), art("h:mats", "mat", mt.ref, Math.round(mt.precio * nM * (1 - r3) / 10) * 10, "oro", { cant: nM, rebaja: r3 })];
     hoy.forEach(function (a) { a.unaVez = true; a.agotado = !!comp[a.id]; });
     [objetos, mats, gemas].forEach(function (L) { L.forEach(function (a) { a.cerrado = (a.pide || 0) > reg; }); });
     return { hoy: hoy, objetos: objetos, mats: mats, gemas: gemas };

@@ -17,6 +17,9 @@
 "atl_ico_2": {
 "pix": 1
 },
+"atl_ico_3": {
+"pix": 1
+},
 "bat_adivina": {
 "c": 0.748,
 "p": 0.043,
@@ -2728,6 +2731,150 @@
 "r": 0,
 "rows": 10
 },
+"ico_arma_alba_1": {
+"atl": "atl_ico_3",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_alba_2": {
+"atl": "atl_ico_3",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_alba_3": {
+"atl": "atl_ico_3",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_bosque_1": {
+"atl": "atl_ico_3",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_bosque_2": {
+"atl": "atl_ico_3",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_bosque_3": {
+"atl": "atl_ico_3",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_brasa_1": {
+"atl": "atl_ico_3",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_brasa_2": {
+"atl": "atl_ico_3",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_brasa_3": {
+"atl": "atl_ico_3",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_marea_1": {
+"atl": "atl_ico_3",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 5
+},
+"ico_arma_marea_2": {
+"atl": "atl_ico_3",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_marea_3": {
+"atl": "atl_ico_3",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_ocaso_1": {
+"atl": "atl_ico_3",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_ocaso_2": {
+"atl": "atl_ico_3",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_ocaso_3": {
+"atl": "atl_ico_3",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_rayo_1": {
+"atl": "atl_ico_3",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_rayo_2": {
+"atl": "atl_ico_3",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_arma_rayo_3": {
+"atl": "atl_ico_3",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
 "ico_ascua": {
 "atl": "atl_ico_1",
 "c": 1,
@@ -3002,6 +3149,150 @@
 "pix": 1,
 "r": 3,
 "rows": 10
+},
+"ico_leg_alba_1": {
+"atl": "atl_ico_3",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_leg_alba_2": {
+"atl": "atl_ico_3",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 5
+},
+"ico_leg_alba_3": {
+"atl": "atl_ico_3",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_bosque_1": {
+"atl": "atl_ico_3",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_bosque_2": {
+"atl": "atl_ico_3",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_bosque_3": {
+"atl": "atl_ico_3",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_brasa_1": {
+"atl": "atl_ico_3",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_brasa_2": {
+"atl": "atl_ico_3",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_brasa_3": {
+"atl": "atl_ico_3",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_marea_1": {
+"atl": "atl_ico_3",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_marea_2": {
+"atl": "atl_ico_3",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_marea_3": {
+"atl": "atl_ico_3",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 5
+},
+"ico_leg_ocaso_1": {
+"atl": "atl_ico_3",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_leg_ocaso_2": {
+"atl": "atl_ico_3",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_leg_ocaso_3": {
+"atl": "atl_ico_3",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_leg_rayo_1": {
+"atl": "atl_ico_3",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_leg_rayo_2": {
+"atl": "atl_ico_3",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_leg_rayo_3": {
+"atl": "atl_ico_3",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
 },
 "ico_mat_alba_1": {
 "atl": "atl_ico_1",
@@ -3514,6 +3805,70 @@
 "pix": 1,
 "r": 9,
 "rows": 10
+},
+"ico_trofeo_catedral_eclipse": {
+"atl": "atl_ico_3",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_trofeo_colinas_brezo": {
+"atl": "atl_ico_3",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_trofeo_costa_tormenta": {
+"atl": "atl_ico_3",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_trofeo_feria_ultima_noche": {
+"atl": "atl_ico_3",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 5
+},
+"ico_trofeo_mesetas_pararrayos": {
+"atl": "atl_ico_3",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 4,
+"rows": 5
+},
+"ico_trofeo_minas_brasa": {
+"atl": "atl_ico_3",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 4,
+"rows": 5
+},
+"ico_trofeo_monasterio_lluvia": {
+"atl": "atl_ico_3",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 4,
+"rows": 5
+},
+"ico_trofeo_salinas_nombres": {
+"atl": "atl_ico_3",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 4,
+"rows": 5
 },
 "ilu_aina": {
 "cab": [
