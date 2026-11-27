@@ -406,6 +406,13 @@
           catch (e) { ev.currentTarget.textContent = "Ese texto no es una partida"; }
         } })]),
       h("div", { class: "fila" }, [
+        // Copiar al portapapeles: el camino que no depende de ninguna otra aplicación del teléfono.
+        h("button", { class: "btn sec", type: "button", text: "Copiar partida", on: function (ev) {
+          var b = ev.currentTarget, txt = textoPartida(), bien = function () { b.textContent = "Copiada: pégala donde quieras"; }, mal = function () { b.textContent = "No se pudo copiar"; };
+          function aMano() { try { var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.focus(); ta.select(); var ok = document.execCommand("copy"); ta.remove(); ok ? bien() : mal(); } catch (e) { mal(); } }
+          try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(bien, aMano); else aMano(); } catch (e) { aMano(); }
+        } })]),
+      h("div", { class: "fila" }, [
         h("button", { class: "btn sec", type: "button", text: "Guardar en archivo", on: function (ev) {
           var b = ev.currentTarget;
           if (APP && APP.compartir) { try { APP.compartir("auria-partida-" + new Date().toISOString().slice(0, 10) + ".txt", textoPartida()); } catch (e) { b.textContent = "No se pudo"; } return; }

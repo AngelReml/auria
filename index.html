@@ -448,7 +448,7 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .tira-eco .tc{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden;border:2px solid var(--linea);background:var(--panel2)}
 .tira-eco.en .tc{border-color:#8a6a3a}
 .tira-eco.sel{opacity:1;color:#ffe3a8}.tira-eco.sel .tc{border-color:var(--ambar);box-shadow:0 0 12px rgba(240,162,60,.6)}
-.tira-eco span{max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tira-eco span:not(.ico){max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .huecos{display:flex;gap:3px}.huecos b{width:8px;height:8px;border-radius:2px;background:#3a3048;border:1px solid #5a4a70}.huecos b.on{background:var(--ambar);border-color:#fff3d0}
 .maniqui{position:relative;height:250px;border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 40%,#3d3155,#1c1626);border:2px solid #5a4a70}
 .maniqui .halo{position:absolute;inset:-10%;background:radial-gradient(circle at 50% 55%,var(--c),transparent 60%);opacity:.35;animation:halo 3s ease-in-out infinite alternate}
@@ -472,11 +472,11 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .pieza.puesta{border-color:#63c784;box-shadow:0 0 12px rgba(99,199,132,.5)}.pieza.puesta small{color:#9be3b5}
 .consejos{border-color:var(--ambar)}
 .consejo{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.08);font-size:14px;text-align:left}
-.consejo span{flex:1}.consejo .chip{flex:none;background:linear-gradient(180deg,#ffc266,#e8922c);color:var(--ambar-tinta);border-color:transparent}
+.consejo span:not(.ico){flex:1}.consejo .chip{flex:none;background:linear-gradient(180deg,#ffc266,#e8922c);color:var(--ambar-tinta);border-color:transparent}
 .resultado .consejos{margin:8px 0;max-height:38vh;overflow:auto}
 .cos-fila{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:15px}
-.cos-fila b{font:700 18px var(--display);color:#ffe3a8;min-width:64px}.cos-fila span{flex:1}.cos-fila small{color:var(--tenue)}
-.cos-fila .ico{width:26px;height:26px}
+.cos-fila b{font:700 18px var(--display);color:#ffe3a8;min-width:64px}.cos-fila span:not(.ico){flex:1}.cos-fila small{color:var(--tenue)}
+.cos-fila .ico{width:26px;height:26px;flex:none}
 .bono-n{font:800 20px var(--display);color:#8fd6ff;text-shadow:0 0 10px rgba(95,182,238,.6)}
 .cajon.tres{grid-template-columns:1fr}.cajon.tres button{white-space:normal}
 /* ===== elegir escuadrón ===== */
@@ -484,7 +484,7 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .eq-hueco{display:flex;flex-direction:column;align-items:center;gap:2px;font:700 10px var(--display);color:var(--tinta);min-width:0}
 .eq-hueco .tc{position:relative;width:100%;aspect-ratio:1;border-radius:10px;overflow:hidden;border:2px solid var(--ambar);background:var(--panel2);box-shadow:0 0 10px rgba(240,162,60,.35)}
 .eq-hueco .tc.vacio{border:2px dashed #6a5a80;box-shadow:none;display:grid;place-items:center;font-size:22px;color:#6a5a80}
-.eq-hueco span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.eq-hueco small{color:var(--tenue);font:500 10px var(--body)}
+.eq-hueco span:not(.ico){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.eq-hueco small{color:var(--tenue);font:500 10px var(--body)}
 .eq-hueco:active .tc{transform:scale(.94)}
 .equipo6.cambiando .eq-hueco .tc{animation:nodolate .7s infinite alternate;border-color:#fff}
 .resumen{flex-wrap:wrap;gap:4px 12px;font-size:13px}.resumen .falta{color:#ffb3a8}
@@ -587,7 +587,7 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .aro.ya{animation:none;transform:scale(1);border-color:#fff;background:rgba(255,255,255,.35);box-shadow:0 0 18px #fff;transition:opacity .25s;opacity:0}
 .carta .orden{position:absolute;right:4px;top:4px;z-index:4;padding:1px 7px;border-radius:999px;background:#ffe38a;color:#3a2a00;font:800 12px var(--display);box-shadow:0 0 8px #ffd76a;animation:pinsalta .6s infinite alternate}
 .coach{position:absolute;left:8px;right:8px;top:34px;z-index:8;display:flex;align-items:center;gap:8px;padding:7px 8px 7px 12px;border-radius:12px;background:rgba(23,19,31,.9);border:1px solid var(--ambar);box-shadow:0 0 12px rgba(240,162,60,.45);font:600 13.5px/1.25 var(--display);color:#ffe9c2;animation:premio-entra .3s both}
-.coach span{flex:1}.coach button{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ambar);color:var(--ambar-tinta);font-weight:800}
+.coach span:not(.ico){flex:1}.coach button{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ambar);color:var(--ambar-tinta);font-weight:800}
 .plaza-accesos{flex-wrap:wrap}.plaza-accesos .acceso{position:relative;min-width:22%}
 .acceso.cerrado{opacity:.5;filter:grayscale(.7)}.acceso .globo{position:absolute;right:-4px;top:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#63c784;color:#0d2a17;font:800 12px/20px var(--display);font-style:normal;text-align:center;box-shadow:0 0 8px #63c784}
 .torre{display:flex;flex-direction:column;gap:12px}.torre .caja{display:flex;flex-direction:column;gap:8px}
@@ -689,7 +689,7 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .carta.ko .carta-raf,.carta.ko .carta-arma{display:none}
 .arma-leyenda-arte{height:170px;background:center/contain no-repeat;filter:drop-shadow(0 0 14px rgba(255,215,106,.5));margin-bottom:6px}
 .aviso-version{position:fixed;left:10px;right:10px;top:54px;z-index:60;display:flex;gap:8px;align-items:center;padding:9px 11px;border-radius:12px;background:rgba(28,22,44,.96);border:1px solid #ffd76a;box-shadow:0 6px 18px rgba(0,0,0,.5)}
-.aviso-version span{flex:1;font:700 14px var(--display);color:#ffe9a6}
+.aviso-version span:not(.ico){flex:1;font:700 14px var(--display);color:#ffe9a6}
 .campo-url{width:100%;margin:8px 0;padding:9px 10px;border-radius:8px;border:1px solid var(--linea);background:var(--panel2);color:inherit;font:14px system-ui}
 .act-url summary{color:var(--tenue);font-size:13px;padding:6px 0}
 .capa.centro>.caja{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);overflow-y:auto;overscroll-behavior:contain}
@@ -710,7 +710,7 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .ev-fases{display:flex;flex-direction:column;gap:6px;padding:10px 12px}
 .ev-fase{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 10px;border-radius:10px;border:1px solid var(--linea);background:var(--panel2);color:inherit;font:inherit;text-align:left}
 .ev-fase i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 13px system-ui;font-style:normal;background:#3a3050;flex:none}
-.ev-fase span{flex:1}.ev-fase small{color:#ffb36a;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.ev-fase span:not(.ico){flex:1}.ev-fase small{color:#ffb36a;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
 .ev-fase.hecha i{background:#3f7a52}.ev-fase.ahora{border-color:#ffd76a}.ev-fase.ahora i{background:#ffd76a;color:#2a1a05}.ev-fase:disabled{opacity:.45}
 .ev-premio{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--linea);background:rgba(255,215,106,.06)}
 .ev-premio b{display:block;font-size:14px}.ev-premio small{color:var(--tenue);font-size:12px}
