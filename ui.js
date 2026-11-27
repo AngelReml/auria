@@ -363,6 +363,13 @@
     if (V.n !== "plaza") { ir("plaza"); return true; }
     return false;
   };
+  // Tu compás: de los golpes que tocaste a mano y pudieron ser chispa, cuántos lo fueron y cuántos se quedaron cerca.
+  function cajaCompas() {
+    var c = (S.stats || {}).cmp; if (!c || !c.n) return h("div", {}, [h("h2", { text: "Tu compás" }), h("p", { class: "tenue", text: "Aún no hay datos. Juega algún combate a mano y aquí verás cuántas chispas clavas." })]);
+    var p = function (x) { return Math.round(100 * x / c.n) + " %"; };
+    return h("div", {}, [h("h2", { text: "Tu compás" }),
+      h("p", { class: "tenue", text: "De " + c.n + " golpes tocados a mano que podían ser chispa: " + p(c.ok) + " lo fueron, " + p(c.casi) + " se quedaron cerca y " + p(c.lejos) + " lejos." })]);
+  }
   function cajaVersion() {
     var I = appInfo(), fila = [h("p", { class: "tenue", text: "Versión " + (I ? I.version : VER.v) + (VER.fecha && !I ? " · " + VER.fecha : "") + (I ? " · aplicación " + I.app : "") })];
     if (!APP) return h("div", {}, [h("h2", { text: "Versión" })].concat(fila));
@@ -383,6 +390,7 @@
         return h("button", { class: "chip", type: "button", "aria-pressed": String(SON.ajustes()[x[0]] !== false), text: x[1], on: function (ev) {
           var v = SON.ajustes()[x[0]] === false; SON.ajustar(x[0], v); ev.currentTarget.setAttribute("aria-pressed", String(v)); if (v) { SON.fx("premio"); if (x[0] === "vibra") SON.vibra(40); } musicaDeVista(); } });
       })),
+      cajaCompas(),
       cajaVersion(),
       h("h2", { text: "Tu partida" }),
       h("p", { class: "tenue", text: "Se guarda sola en este navegador, con una copia de seguridad al día. Para llevarla a otro sitio o no perderla, guárdala en un archivo o copia el texto." }),
@@ -574,7 +582,7 @@
     pad.appendChild(h("div", { class: "caja" }, [h("h2", { text: "Ráfaga: " + b.bb.n }), h("p", { class: "tenue", text: tipo }),
       h("h2", { text: "Su compás: " + hits + (hits === 1 ? " golpe" : " golpes") }),
       h("div", { class: "compas grande" }, rit.map(function (ms) { return h("i", { style: "left:" + Math.min(98, ms / 8) + "%" }); })),
-      h("p", { class: "tenue", text: "Cada punto es un golpe desde que lo tocas: el primero cae a los " + (rit[0] / 1000).toFixed(2).replace(".", ",") + " s. Si un golpe suyo coincide con el de otro eco sobre el mismo enemigo, salta una chispa y ese golpe pega un 50 % más." })]));
+      h("p", { class: "tenue", text: "Cada punto es un golpe desde que lo tocas: el primero cae a los " + (rit[0] / 1000).toFixed(2).replace(".", ",") + " s. Si un golpe suyo coincide con el de otro eco sobre el mismo enemigo, salta una chispa y ese golpe pega el doble." })]));
     // lo que gana en cada estrella
     var filas = [3, 4, 5].map(function (n) {
       var rg = M.RASGOS[b.bb.tipo][n], tiene = e >= n;
@@ -919,6 +927,14 @@
       "aria-label": o.n + " " + o.cant, on: function (ev) { ev.stopPropagation(); info(o); } }, [
       !o.mini && hay(CASILLA[o.r || 0]) ? h("div", { class: "premio-marco", style: "background-image:url(" + url(CASILLA[o.r || 0]) + ")" }) : null,
       h("div", { class: "premio-ico" }, [o.nodo ? o.nodo() : icono(o.ico, o.letra || "?", o.color || "#d8c8a0")]), h("b", { text: String(o.cant) })]);
+  }
+  // Los premios, con jerarquía: lo más raro primero y a la vista; el resto, recogido tras un toque.
+  function cajaPremios(lista) {
+    var ord = lista.map(function (o, i) { return [o, i]; }).sort(function (x, y) { return ((y[0].r || 0) - (x[0].r || 0)) || (x[1] - y[1]); }).map(function (x) { return x[0]; });
+    if (ord.length <= 5) return h("div", { class: "premios-caja" + ((ord[0] && ord[0].r >= 2) ? " con-estrella" : "") }, [rejilla(ord)]);
+    var arriba = ord.slice(0, 4), resto = ord.slice(4), caja = h("div", { class: "premios-caja" + (arriba[0].r >= 2 ? " con-estrella" : "") }, [rejilla(arriba)]);
+    var mas = h("button", { class: "chip premios-mas", type: "button", text: "y " + resto.length + " cosas más", on: function () { mas.replaceWith(rejilla(resto)); } });
+    caja.appendChild(mas); return caja;
   }
   function rejilla(lista, clase) { return h("div", { class: "premios" + (clase ? " " + clase : "") }, lista.map(function (o, i) { return casilla(o, clase ? null : i); })); }
   function usosDe(m) {
@@ -1436,6 +1452,9 @@
     }
     if ((F.vecino || F.recuerdo || F.evento) && F.apertura && !S.hechas["S:" + F.secreta]) lineas = F.apertura;
     if (lineas && clave) { S.vistas[clave] = 1; guardar(); }
+    // Repetir un combate ya ganado no pide leer nada: sale el nombre y se pelea. La ficha completa queda para la primera vez.
+    var yaHecha = !lineas && !F.torre && !F.arena && !!S.hechas[F.secreta ? "S:" + F.secreta : M.clave(F.r, F.a, F.f, F.t)];
+    if (yaHecha) { if (F.jefe) { setTimeout(function () { rotulo(F.nombre, "jefe"); }, 60); setTimeout(luego, 1200); } else setTimeout(luego, 150); return; }
     var els = M.elementosDeFase(F), cuenta = {}; F.olas.forEach(function (o) { o.forEach(function (e) { var el = M.baseEnemigo(e.id).el; cuenta[el] = (cuenta[el] || 0) + 1; }); });
     var mas = els.slice().sort(function (x, y) { return cuenta[y] - cuenta[x]; })[0], contra = D.ELEMENTOS.filter(function (x) { return D.FUERTE[x] === mas; })[0];
     var rum = D.RUMORES[F.r], rumor = rum[Math.floor(Math.random() * rum.length)];
@@ -1492,6 +1511,8 @@
     var tipoFondo = st.fase.granJefe ? "jefe" : (st.fase.a >= 2 ? "interior" : "exterior");
     var campo = h("div", { class: "campo", id: "campo" }); campo.appendChild(fondo(st.fase.fondo || ("map_" + z.id + "_" + tipoFondo), z.cielo));
     campo.appendChild(h("div", { class: "suelo" }));
+    campo.appendChild(h("button", { class: "vel" + (C.rapido ? " on" : ""), type: "button", "aria-label": "Velocidad del combate", text: C.rapido ? "×2" : "×1",
+      on: function (ev) { ev.stopPropagation(); if (C.enCurso) return; C.rapido = !C.rapido; PREF.rapido = C.rapido; C.t0 = performance.now() - ahora() / (C.rapido ? 2 : 1); repintar(); } }));
     if (!st.fase.fondo && hay("amb_" + z.id)) campo.appendChild(h("div", { class: "amb", style: "background-image:url(" + url("amb_" + z.id) + ")" }));   // primer plano del terreno, delante de los luchadores
     campo.appendChild(h("div", { class: "aviso", id: "aviso" }));
     campo.appendChild(h("div", { class: "chispas", id: "chispas" }));
@@ -1659,6 +1680,7 @@
       if (tipo === "guardia") marcarCarta(i); else if (!C.enCurso) { sincronizar(); repintar(); }
       refrescar(); quizaFin(); return;
     }
+    st.autoOn = !!C.auto;   // el registro de compás solo cuenta lo que tocas tú
     var plan = M.iniciar(st, i, tipo, rng); if (!plan) return;
     C.enCurso++; marcarCarta(i);
     plan.ev.forEach(procesar); refrescar();
@@ -1723,7 +1745,7 @@
     if (!V0.t_rafaga && st.aliados.some(function (a) { return a.vivo && !a.actuo && a.bb >= 100; })) return ["t_rafaga", "Barra azul llena: desliza esa carta hacia la derecha para lanzar su ráfaga."];
     if (!V0.t_guardia && st.turno >= 2) { if (st.aliados.some(function (a) { return a.guardia; }) || st.turno >= 5) V0.t_guardia = 1; else return ["t_guardia", "Desliza una carta hacia abajo, o mantenla pulsada, para cubrirte: recibe la mitad de daño."]; }
     if (!V0.t_objetivo && st.enemigos.filter(function (e) { return e.vivo; }).length >= 2 && st.turno >= 2) { if (st.turno >= 4) V0.t_objetivo = 1; else return ["t_objetivo", "Toca a un enemigo para elegir a quién pegan tus ecos."]; }
-    if (!V0.t_chispa && vivosA.length >= 2) { if (st.chispas > 0 || st.turno >= 6) V0.t_chispa = 1; else return ["t_chispa", "Chispa: empieza por el eco marcado «1.º» y toca a los demás cuando su aro llegue al borde. Si golpean a la vez, +50 % de daño."]; }
+    if (!V0.t_chispa && vivosA.length >= 2) { if (st.chispas > 0 || st.turno >= 6) V0.t_chispa = 1; else return ["t_chispa", "Chispa: empieza por el eco marcado «1.º» y toca a los demás cuando su aro llegue al borde. Si golpean a la vez, el golpe pega el doble. En automático casi no salen."]; }
     return null;
   }
   function pintarConsejo() {
@@ -1740,7 +1762,7 @@
     if (x.tipo === "fin") { C.pedirFin = true; quizaFin(); return; }
     if (x.tipo === "atacar") marcarObjetivo(C.st.objetivo);
     accion(x.tipo, x.i);
-    setTimeout(pasoAuto, C.rapido ? 130 : 260);
+    setTimeout(pasoAuto, C.rapido ? 210 : 420);   // el automático toca sin buscar el compás: saca pocas chispas
   }
 
   // ----- efectos -----
@@ -1847,11 +1869,11 @@
         flotar(df + e.a, e.d + (e.el > 1 ? "!" : ""), e.chispa ? "chispa" : (e.el > 1 ? "fuerte" : ((e.el < 1 || e.guardia || e.escudo) ? "flojo" : "")));
         if (e.chispa) {
           if (hay("fxa_chispa")) fxAnim(df + e.a, e.nChispa >= 5 && hay("fxa_chispa_grande") ? "fxa_chispa_grande" : "fxa_chispa", 300); else { FX.golpe(df + e.a, "Rayo", true); FX.anilloEn(df + e.a, "#fff7a0", 18); }
-          var ch = document.getElementById("chispas"); if (ch) { ch.textContent = "Chispa ×" + e.nChispa + " · +50 %"; ch.className = "chispas on" + (e.nChispa >= 5 ? " alta" : ""); void ch.offsetWidth; ch.classList.add("salta"); }
+          var ch = document.getElementById("chispas"); if (ch) { ch.textContent = "Chispa ×" + e.nChispa + " · golpe doble"; ch.className = "chispas on" + (e.nChispa >= 5 ? " alta" : ""); void ch.offsetWidth; ch.classList.add("salta"); }
         }
         if (e.lado === "a") { var va0 = C.vis.a[e.de]; if (va0) { va0.bb = Math.min(200, va0.bb + M.CFG.bbGolpe); barraBB(e.de, va0.bb); } }
         if (enRafaga) espera = base * 0.7;
-      } else if (e.t === "cristal") { chispa("e" + e.de, "c" + e.i, "cristal"); var vb = C.vis.a[e.i]; if (vb) { vb.bb = Math.min(200, vb.bb + 6); setTimeout(function () { barraBB(e.i, vb.bb); }, 380); } espera = 0; }
+      } else if (e.t === "cristal") { chispa("e" + e.de, "c" + e.i, "cristal"); var vb = C.vis.a[e.i]; if (vb) { vb.bb = Math.min(200, vb.bb + (e.v || 6)); setTimeout(function () { barraBB(e.i, vb.bb); }, 380); } espera = 0; }
       else if (e.t === "cae") { enRafaga = enRafaga; var v = C.vis[e.lado][e.i]; if (v) { v.vivo = false; v.pose = 5; } var nn = document.getElementById(e.lado + e.i);
         if (nn) { var ar = nn.querySelector(".arte"); if (ar && ar.dataset.hoja) ar.style.backgroundPosition = "100% 100%"; nn.classList.add("cayendo"); setTimeout(function () { nn.classList.add("caido"); }, 380); }
         if (e.lado === "e") { fxAnim("e" + e.i, "fxa_caida", 480); efecto("e" + e.i, "fx_critico", "#ffffff", "grande", 500); FX.disolver("e" + e.i, st.enemigos[e.i] ? st.enemigos[e.i].el : "Alba"); }
@@ -1958,7 +1980,7 @@
     if (r.bono) premios.push(PREMIO.bono("+" + r.bono));
     premios.forEach(function (o, k) { o.k = k; }); premios.sort(function (x, y) { return (y.r || 0) - (x.r || 0) || x.k - y.k; });
     var marcas = [];
-    if (chispasTot) marcas.push({ ico: pref("ico_chispa", "ei_hb_058"), letra: "✦", color: "#f0c24a", cant: chispasTot, n: "Chispas", d: "Golpes de dos ecos que cayeron a la vez sobre el mismo enemigo: cada chispa pega un 50 % más. Tu mejor racha seguida: ×" + chispasMax + ".", mini: 1 });
+    if (chispasTot) marcas.push({ ico: pref("ico_chispa", "ei_hb_058"), letra: "✦", color: "#f0c24a", cant: chispasTot, n: "Chispas", d: "Golpes de dos ecos que cayeron a la vez sobre el mismo enemigo: cada chispa pega el doble y rompe las cargas el doble de rápido. Tu mejor racha seguida: ×" + chispasMax + ".", mini: 1 });
     if (chispasMax >= 2) marcas.push({ ico: pref("ico_racha", "ei_hb_014"), letra: "R", color: "#f0c24a", cant: "×" + chispasMax, n: "Mejor racha de chispas", d: "Las chispas seguidas que encadenaste sin fallar el compás.", mini: 1 });
     function seguir() {
       C = null;
@@ -1991,7 +2013,7 @@
     if (r.primera && (F.vecino || F.recuerdo || F.evento) && F.cierre) cierre = F.cierre;
     var cv = h("div", { class: "capa centro victoria resultado" }, [h("div", { class: "caja" }, [cinta("ui_cinta_victoria", "Victoria"), h("h2", { text: r.primera ? "Fase superada" : "Otra vez tuya" }),
       raros ? h("div", { class: "aviso-raro", text: raros > 1 ? "¡" + raros + " hallazgos raros!" : "¡Hallazgo raro!" }) : null,
-      rejilla(premios),
+      cajaPremios(premios),
       r.subidas.length ? h("div", { class: "subidas" }, r.subidas.map(function (s) { return h("div", { class: "subida" }, [caraPeq(retrato(s.id, "neutral"), 34, true), h("b", { text: "Nv " + s.lv }), h("i", { text: "▲" })]); })) : null,
       marcas.length ? rejilla(marcas, "fila-mini centro") : null,
       abre ? h("div", { class: "abre", text: abre }) : null,

@@ -3,15 +3,21 @@
   var D = root.AURIA_DATOS || (typeof require !== "undefined" ? require("./datos.js") : null);
   var M = {};
   var COSTE_INVOCAR = 5;
-  // Calibración del combate, versión 7 (27-nov-2026): combates cortos, golpes anunciados que duelen y derrota posible.
+  // Calibración del combate, versión 8 (27-nov-2026): combates cortos, golpes anunciados que duelen y derrota posible.
   // Medido con check/tension.js (30 partidas completas por perfil). Para volver al combate de la versión 6:
   //   eAtk 0, eHp 0, eAtk2 2.5, eHp2 -0.3, jefeHp 0.95, subHp 0.95, pB 0.55, pEs 1.7, pR 2.6, justo 0, rup 1, bbGolpe 7
-  M.CFG = { nivPorFase: 0.372, dif0: 3.3, dif1: 1.2, jefeHp: 1.6, jefeAtk: 0.72, xpBase: 30, xpPorFase: 3, nivBase: 30, nivAsc: 20, respiro: 0.12, muro: 0.3, jefeMuro: 0.2,
-    eAtk: 0.9, eHp: -0.78, eAtk2: 8, eHp2: 0, eDef: 0, eDef2: -0.6, pen: 0,
+  M.CFG = { nivPorFase: 0.372, dif0: 3.3, dif1: 1.2, jefeHp: 1.6, jefeAtk: 0.68, xpBase: 30, xpPorFase: 3, nivBase: 30, nivAsc: 20, respiro: 0.12, muro: 0.3, jefeMuro: 0.2,
+    eAtk: 0.5, eHp: -0.78, eAtk2: 10, eHp2: 0, eDef: 0, eDef2: -0.6, pen: 0,
     // subHp: vida de los jefes de zona. pG/pD/pB/pEs/pR: fuerza de cada acción enemiga (golpe, doble, barrido, especial, remate).
     // guardia/parada: cuánto daño pasa al cubrirse (normal / ante un golpe anunciado).
     // justo: un eco casi entero no cae por golpes que no se veían venir. rup: cuánto cuesta romper una carga. bbGolpe: ráfaga que da cada golpe propio.
-    subHp: 1.7, pG: 1, pD: 0.65, pB: 0.8, pEs: 3.5, pR: 4.5, guardia: 0.5, parada: 0.2, justo: 1, rup: 0.6, bbGolpe: 5 };
+    subHp: 1.7, pG: 1, pD: 0.65, pB: 0.8, pEs: 3.5, pR: 4.5, guardia: 0.5, parada: 0.2, justo: 1, rup: 0.6, bbGolpe: 5,
+    // bbChispa: ráfaga que suelta el cristal de una chispa (el de un golpe normal da 6).
+    bbChispa: 12,
+    // topeEs: lo máximo que un especial quita a un eco, en parte de su vida máxima.
+    topeEs: 0.65,
+    // regHp / regAtk: retoque por región (1 = sin tocar). La Feria salía un escalón más dura que el resto.
+    regHp: [1, 1, 1, 1, 0.85, 1, 1, 1], regAtk: [1, 1, 1, 1, 0.88, 1, 1, 1] };
   
   M.COSTE_INVOCAR = COSTE_INVOCAR;
 
@@ -459,7 +465,8 @@
     var jm = b.jefe ? 1 + M.CFG.jefeMuro * Math.min(1.5, Math.max(0, L - 10) / 65) * (b.sub ? 0.5 : 1) : 1;
     // pasada la región de aprendizaje, los enemigos pegan más y aguantan menos: combates más cortos y con más riesgo
     var rampa = Math.max(0, Math.min(1, (g - 15) / 35)), tarde = Math.max(0, Math.min(1.6, ((e.ge != null ? e.ge : g) - 50) / 150));
-    var kAtk = Math.max(0.05, 1 + M.CFG.eAtk * rampa + M.CFG.eAtk2 * tarde), kHp = Math.max(0.1, 1 + M.CFG.eHp * rampa + M.CFG.eHp2 * tarde), kDef = Math.max(0.05, 1 + M.CFG.eDef * rampa + M.CFG.eDef2 * tarde);
+    function reg(t) { return (t && t[Math.max(0, Math.min(7, Math.floor(g / 25)))]) || 1; }   // retoque fino por región de la historia
+    var kAtk = Math.max(0.05, 1 + M.CFG.eAtk * rampa + M.CFG.eAtk2 * tarde) * reg(M.CFG.regAtk), kHp = Math.max(0.1, 1 + M.CFG.eHp * Math.max(0, Math.min(1, (g - 15) / 20)) + M.CFG.eHp2 * tarde) * reg(M.CFG.regHp), kDef = Math.max(0.05, 1 + M.CFG.eDef * rampa + M.CFG.eDef2 * tarde);
     var hp = Math.round(b.hp * k * kHp * jm * (b.jefe ? 0.95 + ((b.sub ? M.CFG.subHp : M.CFG.jefeHp) - 0.95) * rampa : 1) * (e.variante ? 2.4 : 1) * (e.raid ? 3 : 1) * (e.mhp || 1));
     var patron = patronDe(e, b);
     return { id: e.id, n: b.n + (e.variante ? " feroz" : ""), el: b.el, hp: hp, max: hp, atk: Math.round(b.atk * k * kAtk * (e.variante ? 1.15 : 1) * (b.jefe ? M.CFG.jefeAtk * Math.sqrt(jm) : 1) * (e.matk || 1)), def: Math.round(b.def * k * kDef),
@@ -495,7 +502,7 @@
     return o;
   };
   M.VENTANA_CHISPA = 110;   // ms: dos golpes de ecos distintos sobre el mismo enemigo dentro de esta ventana hacen chispa
-  M.BONO_CHISPA = 1.5;
+  M.BONO_CHISPA = 2;   // una chispa dobla el golpe: es lo que separa jugar a compás de dejar el automático
 
   // Un golpe concreto de un plan. t es el instante en que cae (reloj del combate, en ms).
   // =====================================================================
@@ -626,7 +633,7 @@
     N("aliento2", "Segundo aliento", [0.15, 0.25, 0.35], "Una vez por combate, al bajar del 30 % de vida recupera un {v}.", "008")],
     cap: N("ultima", "Última luz", [1], "Una vez por combate sobrevive a un golpe mortal con un 1 % de vida.", "050") };
   var RAMA_COMPAS = { id: "compas", n: "Compás", lema: "Quien pega a tiempo pega dos veces.", nodos: [
-    N("pulso", "Pulso", [0.10, 0.20, 0.30], "Sus chispas pegan un {v} más (de +50 % a +{t}).", "055"),
+    N("pulso", "Pulso", [0.10, 0.20, 0.30], "Sus chispas pegan un {v} más (de +100 % a +{t}).", "055"),
     N("oido", "Oído fino", [0.15, 0.30, 0.45], "Le vale un margen un {v} mayor para hacer chispa.", "027"),
     N("doble", "Golpe doble", [0.08, 0.16, 0.24], "{v} de que cada golpe se repita a media fuerza.", "019"),
     N("cadencia", "Cadencia", [0.10, 0.20, 0.30], "Cada chispa que saca le da +2 % de daño el resto del combate, hasta un {v}.", "155")],
@@ -743,7 +750,7 @@
   // Valor que tiene (o tendría) un nodo a cierto rango, ya como texto.
   M.textoNodo = function (nodo, rango) {
     var v = nodo.v[Math.max(0, Math.min(nodo.max, rango) - 1)], pc = v < 1;
-    return nodo.d.replace("{v}", pc ? Math.round(v * 100) + " %" : String(v)).replace("{t}", Math.round((0.5 + v) * 100) + " %");
+    return nodo.d.replace("{v}", pc ? Math.round(v * 100) + " %" : String(v)).replace("{t}", Math.round((M.BONO_CHISPA - 1 + v) * 100) + " %");
   };
   // Suma de todo lo que modifican las habilidades y el arma de un eco.
   M.mods = function (id, u) {
@@ -1068,6 +1075,7 @@
     var d = d0, chispa = false;
     if (tiene(a, "ceguera") && rng() < 0.33) { ev.push({ t: "fallo", lado: "a", de: ai, a: ei }); return; }
     var m = a.m || {}, raf = opc && opc.tipo && opc.tipo !== "atacar", eco = opc && opc.eco;
+    if (!st.autoOn && e.ultT != null && e.ultDe !== ai && !eco && !raf && Math.abs(t - e.ultT) < 1000) { var cq = st.cmp = st.cmp || { n: 0, ok: 0, casi: 0, lejos: 0 }, dq = Math.abs(t - e.ultT), vq = M.VENTANA_CHISPA * (tiene(e, "enraizado") ? 2 : 1) * (1 + (m.oido || 0)); cq.n++; if (dq <= vq) cq.ok++; else if (dq <= vq * 2) cq.casi++; else cq.lejos++; }
     if (e.ultT != null && e.ultDe !== ai && Math.abs(t - e.ultT) <= M.VENTANA_CHISPA * (tiene(e, "enraizado") ? 2 : 1) * (1 + (m.oido || 0))) chispa = true;
     if (!chispa && m.metronomo && a.metT !== st.turno && !eco) chispa = true;
     if (!chispa && m.todoChispa && !eco) chispa = true;
@@ -1121,13 +1129,13 @@
         if (m.curaGolpe) { var ph = null; st.aliados.forEach(function (x) { if (x.vivo && x.hp < x.max && (!ph || x.hp / x.max < ph.hp / ph.max)) ph = x; }); if (ph) sanar(st, ev, st.aliados.indexOf(ph), Math.round(ph.max * m.curaGolpe)); }
       }
     }
-    if (chispa || rng() < (el > 1 ? 0.6 : 0.4)) { var va = vivos(st.aliados), cx = va[Math.floor(rng() * va.length)]; subirBB(cx, 6); ev.push({ t: "cristal", de: ei, i: st.aliados.indexOf(cx) }); }
+    if (chispa || rng() < (el > 1 ? 0.6 : 0.4)) { var va = vivos(st.aliados), cx = va[Math.floor(rng() * va.length)], vc = chispa ? M.CFG.bbChispa : 6; subirBB(cx, vc); ev.push({ t: "cristal", de: ei, i: st.aliados.indexOf(cx), v: vc }); }
     if (rng() < 0.12) {
       var her = st.aliados.filter(function (x) { return x.vivo && x.hp < x.max; });
       if (her.length) { var hx = her[Math.floor(rng() * her.length)]; sanar(st, ev, st.aliados.indexOf(hx), Math.round(hx.max * 0.06), { corazon: ei }); }
     }
     if (e.carga && e.hp > 0) {
-      e.dCarga += d * (a.rg.Rompedor ? 2 : 1) * (1 + (m.rompe || 0));
+      e.dCarga += d * (a.rg.Rompedor ? 2 : 1) * (1 + (m.rompe || 0)) * (chispa ? 2 : 1);   // a compás, las cargas se rompen el doble de rápido
       if (e.dCarga >= M.umbralRuptura(e)) romper(st, ev, e, ei);
     }
     if (e.hp <= 0) {
@@ -1302,9 +1310,9 @@
       var m = e.furia > 0 ? 1.3 : 1;
       function azar() { return va[Math.floor(rng() * va.length)]; }
       var contagio = M.estadoDeEnemigo(st, e), probEst = act === "es" || act === "r" ? 1 : ((e.jefe || e.variante) ? 0.3 : 0.12), tope = act === "es" && contagio && (contagio[0] === "paralisis" || contagio[0] === "sueno") ? 2 : 3;   // un mismo ataque nunca contagia a todo el grupo
-      function pegar(a, mult, avisado) {
+      function pegar(a, mult, avisado, tope) {
         if (!a || !a.vivo) return; var ai = st.aliados.indexOf(a);
-        var dio = recibir(st, ev, e, ei, a, ai, mult * m, rng, avisado);
+        var dio = recibir(st, ev, e, ei, a, ai, mult * m, rng, avisado, tope);
         // cubrirse evita el contagio
         if (dio && contagio && a.vivo && !a.guardia && tope > 0 && rng() < probEst) { poner(st, ev, "a", ai, contagio[0], contagio[1]); tope--; }
       }
@@ -1314,7 +1322,7 @@
       else if (act === "d") { pegar(azar(), M.CFG.pD); va = vivos(st.aliados); if (va.length) pegar(azar(), M.CFG.pD); }
       else if (act === "b") { ev.push({ t: "barrido", i: ei }); st.aliados.forEach(function (a) { pegar(a, M.CFG.pB); }); }
       else if (act === "ca") { e.carga = true; e.dCarga = 0; ev.push({ t: "aviso", i: ei, n: M.ESPECIAL[e.id] || "su ataque especial" }); }
-      else if (act === "es") { e.carga = false; ev.push({ t: "especial", i: ei, n: M.ESPECIAL[e.id] || "Ataque especial" }); st.aliados.forEach(function (a) { pegar(a, M.CFG.pEs, true); }); }
+      else if (act === "es") { e.carga = false; ev.push({ t: "especial", i: ei, n: M.ESPECIAL[e.id] || "Ataque especial" }); st.aliados.forEach(function (a) { pegar(a, M.CFG.pEs, true, M.CFG.topeEs); }); }
       else if (act === "m") { var obj = azar(); e.marca = st.aliados.indexOf(obj); ev.push({ t: "marca", i: ei, a: e.marca }); }
       else if (act === "r") { var mk = st.aliados[e.marca]; ev.push({ t: "remate", i: ei, a: e.marca }); e.marca = -1; pegar(mk, M.CFG.pR, true); }
       else if (act === "G") { e.escudo = true; ev.push({ t: "cubre", i: ei }); }
@@ -1337,7 +1345,7 @@
     return ev;
   };
   // avisado: el golpe se veía venir (especial o remate). Cubrirse justo ahí es una parada perfecta.
-  function recibir(st, ev, e, ei, a, ai, mult, rng, avisado) {
+  function recibir(st, ev, e, ei, a, ai, mult, rng, avisado, tope) {
     var m = a.m || {}; st._r = rng;
     if (tiene(e, "ceguera") && rng() < 0.33) { ev.push({ t: "fallo", lado: "e", de: ei, a: ai }); return false; }
     if (m.esquiva && !inmovil(a) && rng() < m.esquiva) { ev.push({ t: "fallo", lado: "e", de: ei, a: ai, esquiva: true }); return false; }
@@ -1353,6 +1361,7 @@
     if (tiene(a, "sueno")) { d = Math.round(d * 1.5); delete a.es.sueno; ev.push({ t: "estado-fin", lado: "a", i: ai, n: "sueno" }); }
     if (a.guardia) { parada = !!avisado; d = Math.round(d * (parada ? M.CFG.parada : M.CFG.guardia)); }
     if (m.prot) d = Math.round(d * (1 - m.prot));
+    if (tope) d = Math.min(d, Math.round(a.max * tope * (a.guardia ? M.CFG.parada : 1)));   // el especial de un jefe castiga a todo el grupo, pero no borra de un golpe a un eco entero
     d = Math.max(1, d);
     // Juego limpio: un eco que empezó el turno enemigo casi entero no cae por golpes que no se veían venir. Se queda en las últimas.
     if (M.CFG.justo && !avisado && a.sano === st.turno && d >= a.hp) d = Math.max(0, a.hp - Math.max(1, Math.round(a.max * 0.05)));
@@ -1450,6 +1459,7 @@
     if (primera && !F.secreta && !F.t) {
       r.llaves = M.LLAVES_GRANJA.filter(function (x) { return x.fase === clave; }).map(function (x) { save.granja.llaves[x.id] = (save.granja.llaves[x.id] || 0) + 1; return x.id; });
     }
+    if (st.cmp) { save.stats = save.stats || {}; var cmp = save.stats.cmp = save.stats.cmp || { n: 0, ok: 0, casi: 0, lejos: 0 }; ["n", "ok", "casi", "lejos"].forEach(function (k) { cmp[k] += st.cmp[k] || 0; }); }
     inc(save, "victorias", 1); inc(save, "chispas", st.chispas || 0); inc(save, "rafagas", st.rafagas || 0);
     var nEn = 0; F.olas.forEach(function (o) { nEn += o.length; }); inc(save, "criaturas", nEn);
     if (st.aliados.every(function (x) { return x.vivo; })) inc(save, "limpias", 1);

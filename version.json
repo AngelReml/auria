@@ -661,10 +661,10 @@
 "fuentes/alegreya-sans-latin-400-normal.woff2": "123cd4a1e13951a8e1f1163e0a05abe24ce500dd",
 "fuentes/alegreya-sans-latin-500-normal.woff2": "005c64e2da1b0d73b57a75e0890ec6a845b0ff82",
 "fuentes/alegreya-sans-latin-700-normal.woff2": "403b09118b4c02a8a8b4749dc472e2a15caab9af",
-"index.html": "41ae442b0b4ed22fd1fe987415aabecdff0f0d00",
-"motor.js": "a9176a05ff7c8c9270dfe30bd7d4a5842664fbe1",
+"index.html": "db1d2e4f28d87282f28d06af387cdb4bc66f76bb",
+"motor.js": "08a7b80251ac3bba9366851fa94dfe12f095fde8",
 "sonido.js": "61138963863ab1359042d066be4d66c97262cf1a",
-"ui.js": "981bae1026d70e41e5e856adeb959e4815f287b5"
+"ui.js": "90af00c65bf2659c9515082d57c2864a24b5307e"
 },
-"v": 7
+"v": 8
 }
