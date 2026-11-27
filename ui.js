@@ -177,10 +177,46 @@
     var f = { titulo: vTitulo, plaza: vPlaza, mapa: vMapa, ecos: vEcos, eco: vEco, talentos: vTalentos, diario: vDiario, bestiario: vBestiario, torre: vTorre, arena: vArena, encargos: vEncargos, logros: vLogros, evento: vEvento, altar: vAltar, forja: vForja, tienda: vTienda, granja: vGranja, combate: vCombate }[V.n];
     // Si una pantalla falla al pintarse, no se queda en blanco: se dice qué ha pasado y se ofrece una salida, con la partida a salvo.
     try { f(); } catch (e) { pantallaRota(V.n, e); return; }
-    if (V.n === "combate") { pintarConsejo(); marcarPrimero(); } musicaDeVista();
+    if (V.n === "combate") { pintarConsejo(); marcarPrimero(); } musicaDeVista(); recordarSitio();
     var atras = { eco: "ecos", talentos: "eco", diario: "plaza", bestiario: "plaza", torre: "plaza", arena: "plaza", encargos: "plaza", logros: "plaza", evento: "plaza" }[V.n];
     if (atras) { var p0 = app.querySelector(".cuerpo .pad"); if (p0) p0.style.paddingTop = "58px"; }
     if (atras) app.appendChild(h("button", { class: "volver-fijo", type: "button", "aria-label": "Volver", on: function () { ir(atras); } }, [h("span", { text: "‹" })]));
+  }
+  // Si la pantalla se recarga sola (el móvil recupera memoria, llega una versión nueva...), el juego vuelve a donde estabas en vez de al título.
+  // Se apunta la pantalla en la que estás y, en combate, cómo va la pelea cada vez que te toca a ti.
+  var SITIO = CLAVE + "-sitio", PELEA = CLAVE + "-pelea", MIN_SITIO = 30 * 60000;
+  function recordarSitio() {
+    try {
+      if (V.n === "titulo") return;
+      localStorage.setItem(SITIO, JSON.stringify({ t: Date.now(), V: V }));
+      if (V.n !== "combate") localStorage.removeItem(PELEA);
+    } catch (e) {}
+  }
+  function recordarPelea() {
+    try {
+      if (V.n !== "combate" || !C || C.st.fin) { if (V.n !== "combate") localStorage.removeItem(PELEA); return; }
+      if (C.ocupado || C.enCurso) return;
+      localStorage.setItem(PELEA, JSON.stringify({ t: Date.now(), st: C.st, auto: !!C.auto })); localStorage.setItem(SITIO, JSON.stringify({ t: Date.now(), V: V }));
+    } catch (e) {}
+  }
+  setInterval(recordarPelea, 1500);
+  function reanudar() {
+    try {
+      var s = JSON.parse(localStorage.getItem(SITIO) || "null"); if (!s || !s.V || Date.now() - s.t > MIN_SITIO) return false;
+      var vistas = { plaza: 1, mapa: 1, ecos: 1, eco: 1, altar: 1, forja: 1, granja: 1, tienda: 1, torre: 1, arena: 1, encargos: 1, logros: 1, diario: 1, bestiario: 1, evento: 1, ajustes: 1 };
+      for (var k in s.V) V[k] = s.V[k];
+      if (V.eco && !S.unidades[V.eco]) V.eco = null;
+      if (s.V.n === "combate") {
+        var p = JSON.parse(localStorage.getItem(PELEA) || "null");
+        if (p && p.st && !p.st.fin && Date.now() - p.t < MIN_SITIO) {
+          C = { st: p.st, modo: null, ocupado: false, auto: false, rapido: PREF.rapido, vis: null, timers: [], enCurso: 0, pedirFin: false, t0: performance.now() };
+          sincronizar(); V.n = "combate"; pintar(); if (V.n === "combate" && C) { rotulo("Sigues donde estabas", "bien"); return true; }
+          C = null;
+        }
+        V.n = "mapa";
+      } else V.n = vistas[s.V.n] && (s.V.n !== "eco" || V.eco) ? s.V.n : "plaza";
+      pintar(); return true;
+    } catch (e) { C = null; return false; }
   }
   function pantallaRota(vista, e) {
     try { if (window.console) console.error("Auria: fallo al pintar " + vista, e); } catch (x) {}
@@ -1977,7 +2013,7 @@
   document.addEventListener("pointerdown", function () { SON.ini(); musicaDeVista(); }, { once: true });
   document.addEventListener("click", function (ev) { var b = ev.target.closest && ev.target.closest("button,[role=button]"); if (b && !b.closest(".carta")) SON.fx("toque"); }, true);
   try { fetch("version.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { if (j) { VER.v = j.v || 0; VER.fecha = j.fecha || ""; } }, function () {}); } catch (e) {}
-  function arrancar() { M.usarDia(hoy()); S = cargar() || M.nuevaPartida(); M.usarPartida(S); guardar(); if (hay("pan_titulo")) V.n = "titulo"; pintar(); }
+  function arrancar() { M.usarDia(hoy()); S = cargar() || M.nuevaPartida(); M.usarPartida(S); guardar(); if (reanudar()) return; V.n = hay("pan_titulo") ? "titulo" : "plaza"; pintar(); }
   window.AURIA_UI = { _combate: function () { return C; }, _repintar: function () { sincronizar(); repintar(); }, estado: function () { return { vista: V.n, combate: C ? { fin: C.st.fin, ola: C.st.ola, turno: C.st.turno, ocupado: C.ocupado } : null, partida: S }; }, arte: function () { return ARTE; } };
   fetch("assets/manifest.json").then(function (r) { return r.ok ? r.json() : {}; }).then(function (m) { ARTE = m || {}; }, function () { ARTE = {}; }).then(function () {
     Object.keys(D.ITEMS).forEach(function (k) { var it = D.ITEMS[k]; if (it.arte && ARTE[it.arte]) it.ico = it.arte; });   // las armas de leyenda estrenan dibujo cuando llegue
