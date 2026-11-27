@@ -86,6 +86,9 @@
   }
   var EXPR = { neutral: 0, alegre: 1, enfadado: 2, triste: 3, sorprendido: 4, decidido: 5 };
   function retrato(id, expr) {
+    if (id.indexOf("e:") === 0 && !hay("exp_" + id.slice(2)) && hay("ret_" + id.slice(2))) {   // jefes y subjefes con retrato propio para los diálogos
+      var dr = h("div", { class: "arte ret" }); dr.style.backgroundImage = "url(" + url("ret_" + id.slice(2)) + ")"; dr.style.backgroundSize = "contain"; dr.style.backgroundPosition = "center bottom"; dr.style.backgroundRepeat = "no-repeat"; return dr;
+    }
     if (id.indexOf("e:") === 0 && !hay("exp_" + id.slice(2))) { var en = D.ENEMIGOS[id.slice(2)]; return sprite(id.slice(2), en.el, 0, false, en.jefe); }
     if (id.indexOf("e:") === 0) id = id.slice(2);   // un rival con cara propia (expresiones) habla como cualquier personaje
     var el = D.HEROES[id] ? D.HEROES[id].el : null, d;
@@ -664,7 +667,7 @@
     var Z = R.zonas[zSel], b = D.HEROES[Z.eco], tengo = !!S.unidades[Z.eco], med = Math.round(S.escuadron.reduce(function (s, id) { return s + S.unidades[id].lv; }, 0) / S.escuadron.length);
     var caja = h("div", { class: "caja ev-zona" }, [
       h("div", { class: "ev-zona-cab", style: hay(Z.fondo) ? "background-image:url(" + url(Z.fondo) + ")" : "" }, [h("div", { class: "ev-velo" }), h("h2", { text: (zSel + 1) + ". " + Z.n }),
-        h("div", { class: "fila tenue" }, [h("span", { text: "Nivel " + Z.lvl + " a " + (Z.lvl + 8) }), h("span", { class: med >= Z.lvl ? "" : "falta", text: "· tu escuadrón: " + med })])])]);
+        h("div", { class: "fila tenue" }, [h("span", { text: "Nivel " + Z.lvl + " a " + (Z.lvl + 6) }), h("span", { class: med >= Z.lvl ? "" : "falta", text: "· tu escuadrón: " + med })])])]);
     if (!Z.abierta) caja.appendChild(h("p", { class: "tenue", text: M.eventoAbierto(S) ? "Se abre al completar «" + R.zonas[zSel - 1].n + "»." : "El libro se abre cuando sueltes las Colinas de Brezo." }));
     else {
       caja.appendChild(h("div", { class: "ev-fases" }, Z.fases.map(function (nom, f) {
@@ -1489,6 +1492,7 @@
     var tipoFondo = st.fase.granJefe ? "jefe" : (st.fase.a >= 2 ? "interior" : "exterior");
     var campo = h("div", { class: "campo", id: "campo" }); campo.appendChild(fondo(st.fase.fondo || ("map_" + z.id + "_" + tipoFondo), z.cielo));
     campo.appendChild(h("div", { class: "suelo" }));
+    if (!st.fase.fondo && hay("amb_" + z.id)) campo.appendChild(h("div", { class: "amb", style: "background-image:url(" + url("amb_" + z.id) + ")" }));   // primer plano del terreno, delante de los luchadores
     campo.appendChild(h("div", { class: "aviso", id: "aviso" }));
     campo.appendChild(h("div", { class: "chispas", id: "chispas" }));
     if (st.fase.limite) campo.appendChild(h("div", { class: "limite", text: "Turno " + st.turno + " de " + st.fase.limite }));
@@ -1501,7 +1505,7 @@
       var d = h("button", { class: "lucha e" + (e.jefe ? " jefe" : "") + (v.vivo ? "" : " caido") + (obj ? " obj" : "") + (e.carga && v.vivo ? " carga" : "") + (e.variante ? " feroz" : "") + (e.escudo && v.vivo ? " cubierto" : "") + (e.aturdido > 0 && v.vivo ? " aturdido" : "") + (e.furia > 0 && v.vivo ? " furia" : ""), type: "button", id: "e" + i,
         "aria-label": e.n + (v.vivo ? ", vida " + v.hp + " de " + e.max : ", derrotado"), style: "left:" + pos[0] + "%;bottom:" + (100 - pos[1]) + "%" + (conJefe && !e.jefe ? ";width:17%" : ""),
         on: function () { if (C.st.enemigos[i].vivo && !C.ocupado) { C.fijo = i; if (C.enCurso || C.auto) marcarObjetivo(i); else { C.st.objetivo = i; repintar(); } } } },
-        [h("div", { class: "vol" + (e.id.indexOf("eco:") === 0 ? " gira" : "") }, [sprite(e.id.replace("eco:", ""), e.el, v.pose, false, e.jefe)]), h("div", { class: "hp" }, [medidor(v.hp, e.max)]),
+        [h("div", { class: "vol" + (e.id.indexOf("eco:") === 0 ? " gira" : "") }, [sprite(e.raid && hay("bat_" + e.id + "_furia") ? e.id + "_furia" : e.id.replace("eco:", ""), e.el, v.pose, false, e.jefe)]), h("div", { class: "hp" }, [medidor(v.hp, e.max)]),
          h("div", { class: "nombre-e" }, [punto(e.el), " " + e.n + " · " + ventaja(e.el) + (e.coraza ? " · coraza" : "") + (e.presencia ? " · pide " + e.presencia + "★" : "")]), insignias(e)]);
       asentar(d, e.id.replace("eco:", ""), "e", e.jefe);
       if (it) d.appendChild(h("div", { class: "intento p" + it.peligro + " t-" + it.tipo, text: it.txt }));
@@ -1745,6 +1749,13 @@
     var s = h("span", { class: "num " + (cls || ""), text: texto }); s.style.left = (35 + Math.random() * 30) + "%";
     n.appendChild(s); setTimeout(function () { s.remove(); }, 800);
   }
+  // Efecto animado de seis cuadros (lámina de 3 x 2) sobre un luchador.
+  function fxAnim(id, nombre, ms) {
+    var n = document.getElementById(id); if (!n || !hay(nombre)) return;
+    var f = h("div", { class: "fxa" }), k = 0, paso = Math.max(30, Math.round((ms || 360) / 6 / (C && C.rapido ? 1.6 : 1)));
+    f.style.backgroundImage = "url(" + url(nombre) + ")"; n.appendChild(f);
+    var t = setInterval(function () { k++; if (k >= 6 || !f.isConnected) { clearInterval(t); f.remove(); return; } f.style.backgroundPosition = ((k % 3) * 50) + "% " + (k < 3 ? 0 : 100) + "%"; }, paso);
+  }
   function efecto(id, nombre, color, cls, ms) {
     var n = document.getElementById(id); if (!n) return;
     var f = h("div", { class: "fx " + (hay(nombre) ? "" : "css ") + (cls || "") });
@@ -1827,7 +1838,7 @@
         tajo(df + e.a, col);
         efecto(df + e.a, e.lado === "a" ? "fx_golpe_" + atacante.el.toLowerCase() : "fx_impacto", col);
         FX.golpe(df + e.a, atacante.el, e.el > 1 || e.fuerte || !!enRafaga);
-        if (e.parada) { FX.escudo("a" + e.a, true); flotar("a" + e.a, "¡Parada perfecta!", "parada"); var vp = C.vis.a[e.a]; if (vp) { vp.bb = Math.min(200, vp.bb + 30); barraBB(e.a, vp.bb); } }
+        if (e.parada) { FX.escudo("a" + e.a, true); fxAnim("a" + e.a, "fxa_parada", 420); flotar("a" + e.a, "¡Parada perfecta!", "parada"); var vp = C.vis.a[e.a]; if (vp) { vp.bb = Math.min(200, vp.bb + 30); barraBB(e.a, vp.bb); } }
         else if (e.guardia) FX.escudo("a" + e.a, false);
         if (e.lado === "a" && tgt && tgt.carga) { var rb = document.getElementById("rup" + e.a); if (rb) rb.firstChild.style.width = Math.min(100, 100 * tgt.dCarga / M.umbralRuptura(tgt)) + "%"; }
         var gordo = e.d > maxT * 0.18;
@@ -1835,15 +1846,15 @@
         if (df === "a") { var cc = document.getElementById("c" + e.a); if (cc) { cc.classList.remove("herida"); void cc.offsetWidth; cc.classList.add("herida"); } }
         flotar(df + e.a, e.d + (e.el > 1 ? "!" : ""), e.chispa ? "chispa" : (e.el > 1 ? "fuerte" : ((e.el < 1 || e.guardia || e.escudo) ? "flojo" : "")));
         if (e.chispa) {
-          FX.golpe(df + e.a, "Rayo", true); FX.anilloEn(df + e.a, "#fff7a0", 18);
+          if (hay("fxa_chispa")) fxAnim(df + e.a, e.nChispa >= 5 && hay("fxa_chispa_grande") ? "fxa_chispa_grande" : "fxa_chispa", 300); else { FX.golpe(df + e.a, "Rayo", true); FX.anilloEn(df + e.a, "#fff7a0", 18); }
           var ch = document.getElementById("chispas"); if (ch) { ch.textContent = "Chispa ×" + e.nChispa + " · +50 %"; ch.className = "chispas on" + (e.nChispa >= 5 ? " alta" : ""); void ch.offsetWidth; ch.classList.add("salta"); }
         }
-        if (e.lado === "a") { var va0 = C.vis.a[e.de]; if (va0) { va0.bb = Math.min(200, va0.bb + 7); barraBB(e.de, va0.bb); } }
+        if (e.lado === "a") { var va0 = C.vis.a[e.de]; if (va0) { va0.bb = Math.min(200, va0.bb + M.CFG.bbGolpe); barraBB(e.de, va0.bb); } }
         if (enRafaga) espera = base * 0.7;
       } else if (e.t === "cristal") { chispa("e" + e.de, "c" + e.i, "cristal"); var vb = C.vis.a[e.i]; if (vb) { vb.bb = Math.min(200, vb.bb + 6); setTimeout(function () { barraBB(e.i, vb.bb); }, 380); } espera = 0; }
       else if (e.t === "cae") { enRafaga = enRafaga; var v = C.vis[e.lado][e.i]; if (v) { v.vivo = false; v.pose = 5; } var nn = document.getElementById(e.lado + e.i);
         if (nn) { var ar = nn.querySelector(".arte"); if (ar && ar.dataset.hoja) ar.style.backgroundPosition = "100% 100%"; nn.classList.add("cayendo"); setTimeout(function () { nn.classList.add("caido"); }, 380); }
-        if (e.lado === "e") { efecto("e" + e.i, "fx_critico", "#ffffff", "grande", 500); FX.disolver("e" + e.i, st.enemigos[e.i] ? st.enemigos[e.i].el : "Alba"); }
+        if (e.lado === "e") { fxAnim("e" + e.i, "fxa_caida", 480); efecto("e" + e.i, "fx_critico", "#ffffff", "grande", 500); FX.disolver("e" + e.i, st.enemigos[e.i] ? st.enemigos[e.i].el : "Alba"); }
         else temblar(true);
         espera = base * 2; }
       else if (e.t === "cura") { var va = C.vis.a[e.i]; if (va) { va.hp = Math.min(st.aliados[e.i].max, va.hp + e.v); barraVida("c" + e.i, va.hp, st.aliados[e.i].max); } flotar("a" + e.i, "+" + e.v, "cura"); efecto("a" + e.i, "fx_curacion", "#63c784", "sube", 600); FX.curar("a" + e.i); if (e.corazon != null) chispa("e" + e.corazon, "c" + e.i, "corazon"); espera = base * 0.5; }
@@ -1874,7 +1885,7 @@
       else if (e.t === "grito") { C.vis.e.forEach(function (x, j) { if (x.vivo) efecto("e" + j, "fx_mejora", "#ef5a4c", "sube", 700); }); flotar("e" + e.i, "¡Grito!", "marca"); FX.anilloEn("e" + e.i, "#ef5a4c", 40); temblar(false); avisar("Los enemigos pegan más fuerte durante dos turnos."); espera = base * 3; }
       else if (e.t === "drena") { efecto("a" + e.a, "fx_empeora", "#8a63c9", "sube", 700); flotar("a" + e.a, "−" + e.v + " ráfaga", "flojo"); chispa("c" + e.a, "e" + e.i, "cristal"); var vd2 = C.vis.a[e.a]; if (vd2) { vd2.bb = Math.max(0, vd2.bb - e.v); barraBB(e.a, vd2.bb); } espera = base * 2; }
       else if (e.t === "aturdido") { flotar("e" + e.i, "Aturdido", "flojo"); espera = base * 2; }
-      else if (e.t === "ruptura") { rotulo("¡Carga rota!", "bien"); FX.romper("e" + e.i); temblar(true); destello("#ffffff", false); var nr = document.getElementById("e" + e.i); if (nr) { nr.classList.remove("carga"); nr.classList.add("aturdido"); var rr = nr.querySelector(".ruptura"); if (rr) rr.remove(); var ii = nr.querySelector(".intento"); if (ii) { ii.textContent = "Aturdido"; ii.className = "intento p0"; } }
+      else if (e.t === "ruptura") { rotulo("¡Carga rota!", "bien"); FX.romper("e" + e.i); fxAnim("e" + e.i, "fxa_ruptura", 480); temblar(true); destello("#ffffff", false); var nr = document.getElementById("e" + e.i); if (nr) { nr.classList.remove("carga"); nr.classList.add("aturdido"); var rr = nr.querySelector(".ruptura"); if (rr) rr.remove(); var ii = nr.querySelector(".intento"); if (ii) { ii.textContent = "Aturdido"; ii.className = "intento p0"; } }
         C.vis.a.forEach(function (x, j) { if (x.vivo) { x.bb = Math.min(200, x.bb + 15); barraBB(j, x.bb); } }); espera = base * 4; }
       else if (e.t === "fase2") {
         rotulo("Segunda fase", "peligro"); if (e.frase) avisar(e.frase); FX.aura("e" + e.i, "#ffd76a", 60); temblar(true); pintarEstados("e", e.i);
@@ -1904,7 +1915,7 @@
       else if (e.t === "elixir") { flotar("a" + e.i, "+100 ráfaga", "parada"); efecto("a" + e.i, "fx_mejora", "#5fb6ee", "sube", 600); espera = base; }
       else if (e.t === "rebato") { flotar("a" + e.i, "¡Otra vez!", "parada"); var cr = document.getElementById("c" + e.i); if (cr) { cr.classList.remove("hecha"); cr.classList.add("lista"); } espera = 60; }
       else if (e.t === "gratis") { flotar("a" + e.i, "Ráfaga gratis", "parada"); C.gratis = e.i; espera = 0; }
-      else if (e.t === "aturde") { flotar("e" + e.i, "Aturdido", "flojo"); var na = document.getElementById("e" + e.i); if (na) na.classList.add("aturdido"); espera = 0; }
+      else if (e.t === "aturde") { fxAnim("e" + e.i, "fxa_aturdido", 600); flotar("e" + e.i, "Aturdido", "flojo"); var na = document.getElementById("e" + e.i); if (na) na.classList.add("aturdido"); espera = 0; }
       else if (e.t === "limite") { rotulo("Se acabó el tiempo", "peligro"); destello("#ef5a4c", true); temblar(true); espera = base * 6; }
       else if (e.t === "turno") { enRafaga = null; sincronizar(); repintar(); espera = base * 0.5; }
       else if (e.t === "pausa") { enRafaga = null; sincronizar(); repintar(); espera = base * 2; }

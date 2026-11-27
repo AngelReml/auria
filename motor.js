@@ -3,7 +3,15 @@
   var D = root.AURIA_DATOS || (typeof require !== "undefined" ? require("./datos.js") : null);
   var M = {};
   var COSTE_INVOCAR = 5;
-  M.CFG = { nivPorFase: 0.372, dif0: 3.3, dif1: 1.2, jefeHp: 0.95, jefeAtk: 0.8, xpBase: 30, xpPorFase: 3, nivBase: 30, nivAsc: 20, respiro: 0.12, muro: 0.3, jefeMuro: 0.2, eAtk: 0, eHp: 0, eAtk2: 2.5, eHp2: -0.3, eDef: 0, eDef2: -0.6, pen: 0 };
+  // Calibración del combate, versión 7 (27-nov-2026): combates cortos, golpes anunciados que duelen y derrota posible.
+  // Medido con check/tension.js (30 partidas completas por perfil). Para volver al combate de la versión 6:
+  //   eAtk 0, eHp 0, eAtk2 2.5, eHp2 -0.3, jefeHp 0.95, subHp 0.95, pB 0.55, pEs 1.7, pR 2.6, justo 0, rup 1, bbGolpe 7
+  M.CFG = { nivPorFase: 0.372, dif0: 3.3, dif1: 1.2, jefeHp: 1.6, jefeAtk: 0.72, xpBase: 30, xpPorFase: 3, nivBase: 30, nivAsc: 20, respiro: 0.12, muro: 0.3, jefeMuro: 0.2,
+    eAtk: 0.9, eHp: -0.78, eAtk2: 8, eHp2: 0, eDef: 0, eDef2: -0.6, pen: 0,
+    // subHp: vida de los jefes de zona. pG/pD/pB/pEs/pR: fuerza de cada acción enemiga (golpe, doble, barrido, especial, remate).
+    // guardia/parada: cuánto daño pasa al cubrirse (normal / ante un golpe anunciado).
+    // justo: un eco casi entero no cae por golpes que no se veían venir. rup: cuánto cuesta romper una carga. bbGolpe: ráfaga que da cada golpe propio.
+    subHp: 1.7, pG: 1, pD: 0.65, pB: 0.8, pEs: 3.5, pR: 4.5, guardia: 0.5, parada: 0.2, justo: 1, rup: 0.6, bbGolpe: 5 };
   
   M.COSTE_INVOCAR = COSTE_INVOCAR;
 
@@ -435,7 +443,7 @@
     if (act === "r") txt = "Remate a " + st.aliados[e.marca].n;
     return { tipo: act, txt: txt, peligro: act === "es" || act === "r" ? 2 : (act === "b" || act === "ca" || act === "m" ? 1 : 0) };
   };
-  M.umbralRuptura = function (e) { return Math.round(e.max * (e.jefe && !e.sub ? 0.10 : (e.sub ? 0.14 : 0.2)) * (1 + 0.15 * (e.t || 0))); };
+  M.umbralRuptura = function (e) { return Math.round(e.max * (e.jefe && !e.sub ? 0.10 : (e.sub ? 0.14 : 0.2)) * (1 + 0.15 * (e.t || 0)) * M.CFG.rup); };
 
   function baseEnemigo(id) {
     if (id.indexOf("eco:") !== 0) return D.ENEMIGOS[id];
@@ -452,7 +460,7 @@
     // pasada la región de aprendizaje, los enemigos pegan más y aguantan menos: combates más cortos y con más riesgo
     var rampa = Math.max(0, Math.min(1, (g - 15) / 35)), tarde = Math.max(0, Math.min(1.6, ((e.ge != null ? e.ge : g) - 50) / 150));
     var kAtk = Math.max(0.05, 1 + M.CFG.eAtk * rampa + M.CFG.eAtk2 * tarde), kHp = Math.max(0.1, 1 + M.CFG.eHp * rampa + M.CFG.eHp2 * tarde), kDef = Math.max(0.05, 1 + M.CFG.eDef * rampa + M.CFG.eDef2 * tarde);
-    var hp = Math.round(b.hp * k * kHp * jm * (b.jefe ? M.CFG.jefeHp : 1) * (e.variante ? 2.4 : 1) * (e.raid ? 3 : 1) * (e.mhp || 1));
+    var hp = Math.round(b.hp * k * kHp * jm * (b.jefe ? 0.95 + ((b.sub ? M.CFG.subHp : M.CFG.jefeHp) - 0.95) * rampa : 1) * (e.variante ? 2.4 : 1) * (e.raid ? 3 : 1) * (e.mhp || 1));
     var patron = patronDe(e, b);
     return { id: e.id, n: b.n + (e.variante ? " feroz" : ""), el: b.el, hp: hp, max: hp, atk: Math.round(b.atk * k * kAtk * (e.variante ? 1.15 : 1) * (b.jefe ? M.CFG.jefeAtk * Math.sqrt(jm) : 1) * (e.matk || 1)), def: Math.round(b.def * k * kDef),
       jefe: !!b.jefe, sub: !!b.sub, variante: !!e.variante, raid: !!e.raid, vivo: true, pose: 0, t: e.t || 0,
@@ -850,11 +858,11 @@
   M.EVENTO = { id: "otro_mundo", n: "El libro de otro mundo", sub: "Colaboración · Elden Ivalice", pide: 1,
     d: "En el archivo ha aparecido un libro que no es de aquí. Quien lo abre, cruza. Al otro lado hay dos hermanos que buscan el camino a casa y un clan que cobra por encontrarlos antes.",
     zonas: [
-      { n: "El barranco",        eco: "tam",    lvl: 12, fondo: "map_ev_1", com: ["ev_contrabandista", "ev_lancero", "ev_soldado"] },
-      { n: "El lavadero",        eco: "hollis", lvl: 24, fondo: "map_ev_2", com: ["ev_soldado", "ev_soldada", "ev_ballestera"] },
-      { n: "La mina del clan",   eco: "llum",   lvl: 36, fondo: "map_ev_3", com: ["ev_lancero", "ev_contrabandista", "ev_soldada"] },
-      { n: "La plaza del tablón", eco: "ulric", lvl: 48, fondo: "map_ev_4", com: ["ev_ballestera", "ev_soldado", "ev_lancero"] },
-      { n: "Las ruinas",         eco: "eren",   lvl: 60, fondo: "map_ev_5", com: ["ev_soldada", "ev_ballestera", "ev_contrabandista"] }
+      { n: "El barranco",        eco: "tam",    lvl: 7, fondo: "map_ev_1", com: ["ev_contrabandista", "ev_lancero", "ev_soldado"] },
+      { n: "El lavadero",        eco: "hollis", lvl: 16, fondo: "map_ev_2", com: ["ev_soldado", "ev_soldada", "ev_ballestera"] },
+      { n: "La mina del clan",   eco: "llum",   lvl: 25, fondo: "map_ev_3", com: ["ev_lancero", "ev_contrabandista", "ev_soldada"] },
+      { n: "La plaza del tablón", eco: "ulric", lvl: 34, fondo: "map_ev_4", com: ["ev_ballestera", "ev_soldado", "ev_lancero"] },
+      { n: "Las ruinas",         eco: "eren",   lvl: 44, fondo: "map_ev_5", com: ["ev_soldada", "ev_ballestera", "ev_contrabandista"] }
     ] };
   var EV_FASES = ["Primer paso", "Rastro", "Emboscada", "Lo que guardan", "Quien manda aquí"];
   var EV_GUION = {
@@ -878,7 +886,7 @@
   };
   M.eventoResumen = function (save) { var zs = M.EVENTO.zonas.map(function (_, z) { return M.eventoZona(save, z); }); return { zonas: zs, hechas: zs.reduce(function (s, x) { return s + x.hechas; }, 0), ecos: zs.filter(function (x) { return x.completa; }).length }; };
   M.faseEvento = function (z, f) {
-    var Z = M.EVENTO.zonas[z], lvl = Z.lvl + f * 2, ge = Math.round((lvl - 1) / M.CFG.nivPorFase), c = Z.com, tr = Math.min(3, z), G = EV_GUION[z + "-" + f] || {};
+    var Z = M.EVENTO.zonas[z], lvl = Z.lvl + Math.round(f * 1.5), ge = Math.round((lvl - 1) / M.CFG.nivPorFase), c = Z.com, tr = Math.min(3, z), G = EV_GUION[z + "-" + f] || {};
     function mk(idE, extra) { var o = { id: idE, lvl: lvl, g: 99, ge: Math.min(ge, 60 + z * 10), trucos: tr, t: 0, mhp: z >= 3 ? 0.75 : 1 }; for (var k in extra) o[k] = extra[k]; return o; }
     var olas = [[mk(c[0], { arq: (z + f) % 8, pos: 0 }), mk(c[1], { arq: (z + f + 3) % 8, pos: 1 })], [mk(c[1], { arq: (f + 5) % 8, pos: 0 }), mk(c[2], { arq: (z + 2) % 8, pos: 1 }), mk(c[0], { arq: (f + 1) % 8, pos: 2 })]];
     if (f === 4) olas.push(z === 4 ? [mk("dalric_venn", { pos: 0 }), mk("ev_ballestera", { arq: 5, pos: 1 }), mk("ev_soldado", { arq: 0, pos: 2 })] : [mk("ev_capitan", { pos: 0 }), mk(c[2], { arq: 4, pos: 1 })]);
@@ -1094,7 +1102,7 @@
     d = Math.max(1, d); e.hp = Math.max(0, e.hp - d);
     if (chispa) { st.chispas++; st.chispasTurno++; if (st.chispasTurno > st.mejorChispas) st.mejorChispas = st.chispasTurno; }
     ev.push({ t: "golpe", lado: "a", de: ai, a: ei, d: d, el: el, escudo: e.escudo, aturdido: e.aturdido > 0, chispa: chispa, nChispa: st.chispasTurno });
-    subirBB(a, 7);
+    subirBB(a, M.CFG.bbGolpe);
     if (!eco) {
       if (m.robo) { var rb = Math.round(d * m.robo); if (rb > 0) { sanar(st, ev, ai, rb); if (m.roboGrupo) st.aliados.forEach(function (x, j) { if (j !== ai && x.vivo && x.hp < x.max) sanar(st, ev, j, Math.round(rb / 2)); }); } }
       if (e.hp > 0) {
@@ -1280,6 +1288,7 @@
     st.cadena = 0; st.chispasTurno = 0;
     pasoEstados(st, ev, "a");
     if (!vivos(st.aliados).length) { st.fin = "derrota"; ev.push({ t: "derrota" }); return ev; }
+    st.aliados.forEach(function (x) { x.sano = x.vivo && x.hp >= x.max * 0.9 ? st.turno : -1; });
     ev.push({ t: "fase-enemiga" });
     st.enemigos.forEach(function (e, ei) {
       if (!e.vivo || st.fin) return;
@@ -1301,20 +1310,20 @@
       }
       if (act === "G" && tiene(e, "enraizado")) act = "g";
       if (act === "c" && tiene(e, "maldicion")) act = "g";
-      if (act === "g") pegar(azar(), 1);
-      else if (act === "d") { pegar(azar(), 0.65); va = vivos(st.aliados); if (va.length) pegar(azar(), 0.65); }
-      else if (act === "b") { ev.push({ t: "barrido", i: ei }); st.aliados.forEach(function (a) { pegar(a, 0.55); }); }
+      if (act === "g") pegar(azar(), M.CFG.pG);
+      else if (act === "d") { pegar(azar(), M.CFG.pD); va = vivos(st.aliados); if (va.length) pegar(azar(), M.CFG.pD); }
+      else if (act === "b") { ev.push({ t: "barrido", i: ei }); st.aliados.forEach(function (a) { pegar(a, M.CFG.pB); }); }
       else if (act === "ca") { e.carga = true; e.dCarga = 0; ev.push({ t: "aviso", i: ei, n: M.ESPECIAL[e.id] || "su ataque especial" }); }
-      else if (act === "es") { e.carga = false; ev.push({ t: "especial", i: ei, n: M.ESPECIAL[e.id] || "Ataque especial" }); st.aliados.forEach(function (a) { pegar(a, 1.7, true); }); }
+      else if (act === "es") { e.carga = false; ev.push({ t: "especial", i: ei, n: M.ESPECIAL[e.id] || "Ataque especial" }); st.aliados.forEach(function (a) { pegar(a, M.CFG.pEs, true); }); }
       else if (act === "m") { var obj = azar(); e.marca = st.aliados.indexOf(obj); ev.push({ t: "marca", i: ei, a: e.marca }); }
-      else if (act === "r") { var mk = st.aliados[e.marca]; ev.push({ t: "remate", i: ei, a: e.marca }); e.marca = -1; pegar(mk, 2.6, true); }
+      else if (act === "r") { var mk = st.aliados[e.marca]; ev.push({ t: "remate", i: ei, a: e.marca }); e.marca = -1; pegar(mk, M.CFG.pR, true); }
       else if (act === "G") { e.escudo = true; ev.push({ t: "cubre", i: ei }); }
       else if (act === "c") {
         var peor = null; st.enemigos.forEach(function (x) { if (x.vivo && x.hp < x.max && (!peor || x.hp / x.max < peor.hp / peor.max)) peor = x; });
-        if (peor) { var c = Math.round(peor.max * (peor.jefe ? 0.06 : 0.18)); peor.hp = Math.min(peor.max, peor.hp + c); ev.push({ t: "cura-e", i: ei, a: st.enemigos.indexOf(peor), v: c }); } else pegar(azar(), 1);
+        if (peor) { var c = Math.round(peor.max * (peor.jefe ? 0.06 : 0.18)); peor.hp = Math.min(peor.max, peor.hp + c); ev.push({ t: "cura-e", i: ei, a: st.enemigos.indexOf(peor), v: c }); } else pegar(azar(), M.CFG.pG);
       }
       else if (act === "gr") { st.enemigos.forEach(function (x) { if (x.vivo) x.furia = 3; }); ev.push({ t: "grito", i: ei }); }
-      else if (act === "dr") { var dx = azar(); pegar(dx, 0.8); if (dx.vivo && dx.bb > 0) { var q = Math.min(40, dx.bb); dx.bb -= q; ev.push({ t: "drena", i: ei, a: st.aliados.indexOf(dx), v: q }); } }
+      else if (act === "dr") { var dx = azar(); pegar(dx, 0.8 * M.CFG.pG); if (dx.vivo && dx.bb > 0) { var q = Math.min(40, dx.bb); dx.bb -= q; ev.push({ t: "drena", i: ei, a: st.aliados.indexOf(dx), v: q }); } }
       if (e.furia > 0) e.furia--;
       if (e.brecha > 0) e.brecha--;
       if (!vivos(st.aliados).length) { st.fin = "derrota"; ev.push({ t: "derrota" }); }
@@ -1342,9 +1351,11 @@
     if (tiene(a, "defensa")) d = Math.round(d * 0.7);
     if (tiene(a, "barrera") && a.barreraEl === e.el) d = Math.round(d * 0.4);
     if (tiene(a, "sueno")) { d = Math.round(d * 1.5); delete a.es.sueno; ev.push({ t: "estado-fin", lado: "a", i: ai, n: "sueno" }); }
-    if (a.guardia) { parada = !!avisado; d = Math.round(d * (parada ? 0.2 : 0.5)); }
+    if (a.guardia) { parada = !!avisado; d = Math.round(d * (parada ? M.CFG.parada : M.CFG.guardia)); }
     if (m.prot) d = Math.round(d * (1 - m.prot));
     d = Math.max(1, d);
+    // Juego limpio: un eco que empezó el turno enemigo casi entero no cae por golpes que no se veían venir. Se queda en las últimas.
+    if (M.CFG.justo && !avisado && a.sano === st.turno && d >= a.hp) d = Math.max(0, a.hp - Math.max(1, Math.round(a.max * 0.05)));
     a.hp = Math.max(0, a.hp - d); subirBB(a, parada ? 30 : 5);
     ev.push({ t: "golpe", lado: "e", de: ei, a: ai, d: d, el: el, guardia: a.guardia, parada: parada, fuerte: !!avisado });
     if (a.hp <= 0 && m.cerrojo && !a.usoCerrojo) { a.usoCerrojo = true; a.hp = 1; a.cerrado = st.turno; ev.push({ t: "aguanta", i: ai, n: "Cerrojo de Dentro", hp: 1 }); }
