@@ -587,9 +587,9 @@
     var tipo = M.textoRafaga(id);
     var hits = b.hits + (e >= 5 ? 1 : 0), rit = M.ritmo(id, hits);
     pad.appendChild(h("div", { class: "caja" }, [h("h2", { text: "Ráfaga: " + b.bb.n }), h("p", { class: "tenue", text: tipo }),
-      h("h2", { text: "Su compás: " + hits + (hits === 1 ? " golpe" : " golpes") }),
-      h("div", { class: "compas grande" }, rit.map(function (ms) { return h("i", { style: "left:" + Math.min(98, ms / 8) + "%" }); })),
-      h("p", { class: "tenue", text: "Cada punto es un golpe desde que lo tocas: el primero cae a los " + (rit[0] / 1000).toFixed(2).replace(".", ",") + " s. Si un golpe suyo coincide con el de otro eco sobre el mismo enemigo, salta una chispa y ese golpe pega el doble." })]));
+      h("h2", { text: "Su compás: «" + M.compas(id).n + "»" }),
+      tiraCompas(id, hits, " grande"),
+      h("p", { class: "tenue", text: "Es " + M.compas(id).peso + ": su primer golpe llega al " + ["", "primer", "segundo", "tercer", "cuarto", "quinto"][M.compas(id).llega] + " pulso, y da " + hits + (hits === 1 ? " golpe" : " golpes") + ". Cada raya es un pulso y cada punto, un golpe. Si lo tocas justo en un pulso, sus golpes caen a la vez que los de los compañeros: salta la chispa y ese golpe pega el doble." })]));
     // lo que gana en cada estrella
     var filas = [3, 4, 5].map(function (n) {
       var rg = M.RASGOS[b.bb.tipo][n], tiene = e >= n;
@@ -1570,7 +1570,7 @@
         h("div", { class: "cc" }, [
           h("div", { class: "ci" }, [retrato(a.id, !v.vivo ? "triste" : (v.hp < a.max * 0.35 ? "enfadado" : (bb >= 100 ? "decidido" : "neutral"))), icoRafaga(a), icoArmaCarta(a)]),
           h("div", { class: "cb" }, [h("div", { class: "l2", id: "lh" + i, text: v.vivo ? v.hp + " / " + a.max : "Caído" }), medidor(v.hp, a.max), h("div", { class: "l2", id: "lb" + i, text: "Ráfaga " + bb }), barraRafaga(bb),
-            h("div", { class: "compas", title: "Cuándo cae cada golpe" }, M.ritmo(a.id, a.hits).map(function (ms) { return h("i", { style: "left:" + Math.min(98, ms / 8) + "%" }); }))])])]);
+            tiraCompas(a.id, a.hits, "")])])]);
       gestos(carta, i);
       cartas.appendChild(carta);
     });
@@ -1601,7 +1601,7 @@
         return boton(m[1], null, { on: act3 === m[0], fn: function () { PREF.autoRaf = m[0]; repintar(); } }); })));
       mandos.appendChild(h("div", { class: "ayuda", text: "En automático todos atacan al enemigo que toques. Si no tocas ninguno, eligen ellos." }));
       mandos.appendChild(h("div", { class: "cajon dos" }, [
-        boton(PREF.guia === false ? "Aro de compás: no" : "Aro de compás: sí", null, { on: PREF.guia !== false, fn: function () { PREF.guia = PREF.guia === false; repintar(); } }),
+        boton(PREF.guia === false ? "Metrónomo: no" : "Metrónomo: sí", null, { on: PREF.guia !== false, fn: function () { PREF.guia = PREF.guia === false; repintar(); } }),
         boton(C.rapido ? "Velocidad: rápida" : "Velocidad: normal", null, { on: C.rapido, fn: function () { if (C.enCurso) return; C.rapido = !C.rapido; PREF.rapido = C.rapido; C.t0 = performance.now() - ahora() / (C.rapido ? 2 : 1); repintar(); } }),
         boton("Huir del combate", "ico_menu_volver", { fn: function () { limpiarTimers(); C.auto = false; C = null; ir("mapa"); } })]));
     }
@@ -1609,10 +1609,10 @@
   }
   // Gestos sobre la carta: tocar ataca, derecha ráfaga, arriba súper ráfaga, abajo guardia.
   function gestos(carta, i) {
-    var x0 = null, y0 = 0, largo = null;
+    var x0 = null, y0 = 0, largo = null, tToque = 0;
     function soltar() { x0 = null; clearTimeout(largo); carta.classList.remove("pulsada"); }
     carta.addEventListener("pointerdown", function (ev) {
-      x0 = ev.clientX; y0 = ev.clientY; try { carta.setPointerCapture(ev.pointerId); } catch (e) {}
+      x0 = ev.clientX; y0 = ev.clientY; tToque = performance.now(); try { carta.setPointerCapture(ev.pointerId); } catch (e) {}
       carta.classList.add("pulsada");
       // mantener pulsado medio segundo también pone en guardia, por si el móvil se queda con el deslizamiento
       largo = setTimeout(function () { if (x0 !== null) { soltar(); gesto(i, "abajo"); } }, 450);
@@ -1626,24 +1626,24 @@
       if (x0 === null) return; var dx = ev.clientX - x0, dy = ev.clientY - y0; soltar();
       var U = 26, g = "toque";
       if (Math.abs(dx) > U || Math.abs(dy) > U) g = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "derecha" : "izquierda") : (dy < 0 ? "arriba" : "abajo");
-      gesto(i, g);
+      gesto(i, g, tToque);
     });
     carta.addEventListener("contextmenu", function (ev) { ev.preventDefault(); });
     carta.addEventListener("keydown", function (ev) {
       var k = { Enter: "toque", " ": "toque", ArrowRight: "derecha", ArrowUp: "arriba", ArrowDown: "abajo" }[ev.key]; if (k) { ev.preventDefault(); gesto(i, k); }
     });
   }
-  function gesto(i, g) {
+  function gesto(i, g, tToque) {
     if (!C || C.ocupado || C.auto || C.st.fin) return;
     var a = C.st.aliados[i];
     if (C.modo) { var m = C.modo; C.modo = null; C.cajon = null; accion(m, i); if (C && !C.enCurso) repintar(); return; }
     if (!a.vivo || a.actuo) { quizaFin(); return; }
     if (M.inmovil(a)) { flotarCarta(i, M.tieneEstado(a, "sueno") ? "Está dormido" : "Está paralizado"); return; }
     if (g !== "toque" && M.tieneEstado(a, "enraizado")) { flotarCarta(i, "Enraizado: solo puede atacar"); return; }
-    if (g === "toque") accion("atacar", i);
+    if (g === "toque") accion("atacar", i, tToque);
     else if (g === "abajo") accion("guardia", i);
-    else if (g === "derecha") { if (a.bb >= 100) accion("rafaga", i); else flotarCarta(i, "Falta ráfaga"); }
-    else if (g === "arriba") { if (a.bb >= 200) accion("super", i); else flotarCarta(i, a.bb >= 100 ? "Aún no: llena la barra dorada" : "Falta ráfaga"); }
+    else if (g === "derecha") { if (a.bb >= 100) accion("rafaga", i, tToque); else flotarCarta(i, "Falta ráfaga"); }
+    else if (g === "arriba") { if (a.bb >= 200) accion("super", i, tToque); else flotarCarta(i, a.bb >= 100 ? "Aún no: llena la barra dorada" : "Falta ráfaga"); }
   }
   function flotarCarta(i, t) { var c = document.getElementById("c" + i); if (!c) return; var s = h("span", { class: "num flojo", style: "font-size:13px;top:30%", text: t }); c.appendChild(s); setTimeout(function () { s.remove(); }, 700); }
   function objetivoActual() {
@@ -1653,6 +1653,13 @@
   function repintar() { if (V.n === "combate" && C) { app.textContent = ""; vCombate(); pintarConsejo(); marcarPrimero(); } }
   function ahora() { return (performance.now() - C.t0) * (C.rapido ? 2 : 1); }
   function limpiarTimers() { if (C && C.timers) { C.timers.forEach(clearTimeout); C.timers = []; } if (C) C.enCurso = 0; }
+  // El compás dibujado: una raya por pulso y un punto por golpe. Dos ecos hacen chispa donde sus puntos caen en la misma raya.
+  function tiraCompas(id, hits, clase) {
+    var rit = M.ritmo(id, hits), pulsos = Math.max(8, Math.round(rit[rit.length - 1] / M.PULSO) + 1), kids = [];
+    for (var k = 1; k < pulsos; k++) kids.push(h("u", { style: "left:" + (100 * k / pulsos) + "%" }));
+    rit.forEach(function (ms) { kids.push(h("i", { style: "left:" + (100 * (ms / M.PULSO) / pulsos) + "%" })); });
+    return h("div", { class: "compas" + (clase || ""), title: "«" + M.compas(id).n + "»: cuándo cae cada golpe" }, kids);
+  }
   function marcarCarta(i) { var c = document.getElementById("c" + i); if (c) { c.classList.remove("lista", "carga", "super"); c.classList.add("hecha"); var p = c.querySelector(".pista"); if (p) p.textContent = ""; } }
   function marcarObjetivo(i) {
     C.st.objetivo = i;
@@ -1677,7 +1684,8 @@
     C.pedirFin = false; C.ocupado = true; var st = C.st;
     setTimeout(function () { if (C && C.st === st) reproducir(M.finTurno(st, rng)); }, C.rapido ? 180 : 380);
   }
-  function accion(tipo, i) {
+  // tToque: el instante en que el dedo tocó la carta. El compás cuenta desde ahí, no desde que se levanta el dedo ni desde que acaba un deslizamiento.
+  function accion(tipo, i, tToque) {
     if (!C || C.st.fin || C.ocupado) return;
     var st = C.st, ev;
     if (tipo === "fin") { C.pedirFin = true; quizaFin(); return; }
@@ -1691,12 +1699,14 @@
     }
     st.autoOn = !!C.auto;   // el registro de compás solo cuenta lo que tocas tú
     var plan = M.iniciar(st, i, tipo, rng); if (!plan) return;
+    var ya = performance.now(), atraso = tToque && ya - tToque < 400 ? ya - tToque : 0, tIni = ya - atraso;
+    if (plan.golpes.length) { if (C.pulso0 != null) juzgarToque(i, tIni); if (tipo === "atacar") pose("a", i, 1, plan.golpes[0] / (C.rapido ? 2 : 1)); }   // se prepara mientras llega su primer golpe
     C.enCurso++; marcarCarta(i);
     plan.ev.forEach(procesar); refrescar();
     if (!plan.golpes.length) { C.enCurso--; quizaFin(); return; }
     var vel = C.rapido ? 2 : 1, ola = st.ola, ultimo = plan.golpes.length - 1;
     if (tipo !== "atacar") { S.vistas.t_rafaga = 1; SON.fx(tipo === "super" ? "super" : "rafaga"); SON.vibra(tipo === "super" ? [30, 40, 90] : 40); }
-    guiaCompas(plan, i, vel);
+    guiaCompas(plan, i, vel, tIni);
     plan.golpes.forEach(function (ms, k) {
       C.timers.push(setTimeout(function () {
         if (!C || C.st !== st || st.fin || st.ola !== ola) return;
@@ -1714,33 +1724,54 @@
           return;
         }
         if (k === ultimo) { C.enCurso = Math.max(0, C.enCurso - 1); quizaFin(); }
-      }, ms / vel));
+      }, Math.max(0, ms / vel - atraso)));
     });
   }
-  // Guía de compás: en las cartas que aún no han actuado crece un aro; cuando llega al borde es el momento de tocar para sacar chispa.
-  function guiaCompas(plan, i, vel) {
-    if (!C || C.auto || PREF.guia === false) return;
-    var st = C.st, t = performance.now();
-    C.aire = (C.aire || []).filter(function (L) { return L > t; });
-    plan.golpes.forEach(function (ms) { C.aire.push(t + ms / vel); });
+  // El pulso del turno. El primer eco que tocas pone el metrónomo en marcha: un pulso cada 400 ms.
+  // En las cartas que quedan, un aro se cierra en cada pulso: tocar justo ahí hace que sus golpes caigan con los de los compañeros.
+  function guiaCompas(plan, i, vel, tIni) {
+    if (!C) return;
+    if (C.pulso0 == null) C.pulso0 = tIni || performance.now();
+    var viejo = document.getElementById("aro" + i); if (viejo) viejo.remove();
+    if (!C.latido) C.latido = setInterval(latirCartas, 120);
+    latirCartas(); marcarPrimero();
+  }
+  function pararPulso() { if (!C) return; C.pulso0 = null; if (C.latido) { clearInterval(C.latido); C.latido = null; } Array.prototype.forEach.call(document.querySelectorAll("#aros, #metro"), function (n) { n.remove(); }); }
+  function latirCartas() {
+    if (!C || V.n !== "combate" || C.st.fin) { if (C && C.latido) { clearInterval(C.latido); C.latido = null; } Array.prototype.forEach.call(document.querySelectorAll("#aros, #metro"), function (n) { n.remove(); }); return; }
+    if (C.pulso0 == null) return;
+    var st = C.st, Tv = M.PULSO / (C.rapido ? 2 : 1), fase = (performance.now() - C.pulso0) % Tv, guia = !C.auto && PREF.guia !== false, quedan = 0;
+    // los aros viven en una capa por encima de todo: así pueden cerrarse desde fuera de la carta sin que nada los recorte
+    var capaAros = document.getElementById("aros"); if (!capaAros) { capaAros = h("div", { id: "aros", "aria-hidden": "true" }); document.body.appendChild(capaAros); }
     st.aliados.forEach(function (a, j) {
-      if (j === i || !a.vivo || a.actuo || M.inmovil(a)) return;
-      var c = document.getElementById("c" + j); if (!c) return;
-      var rp = 1 - ((a.m && a.m.rapido) || 0), mejor = null, comodo = null;
-      M.ritmo(a.id, a.hits).forEach(function (r) { C.aire.forEach(function (L) { var d = (L - t) - r * rp / vel; if (d >= 300 && (comodo === null || d < comodo)) comodo = d; if (d >= 150 && (mejor === null || d < mejor)) mejor = d; }); });
-      if (comodo !== null) mejor = comodo;   // si hay un hueco con tiempo para reaccionar, mejor ese
-      var viejo = c.querySelector(".aro"); if (viejo) viejo.remove();
-      if (mejor === null) return;
-      var aro = h("div", { class: "aro", style: "animation-duration:" + Math.round(mejor) + "ms" }); c.appendChild(aro);
-      C.timers.push(setTimeout(function () { aro.classList.add("ya"); }, mejor));
-      C.timers.push(setTimeout(function () { aro.remove(); }, mejor + 260));
+      var c = document.getElementById("c" + j), aro = document.getElementById("aro" + j), libre = c && a.vivo && !a.actuo && !M.inmovil(a);
+      if (!guia || !libre) { if (aro) aro.remove(); return; }
+      quedan++;
+      var r = c.getBoundingClientRect();
+      if (!aro) { aro = h("div", { class: "aro", id: "aro" + j }); aro.style.animationDuration = Tv + "ms"; aro.style.animationDelay = (-fase) + "ms"; capaAros.appendChild(aro); }
+      aro.style.left = r.left + "px"; aro.style.top = r.top + "px"; aro.style.width = r.width + "px"; aro.style.height = r.height + "px";
     });
-    marcarPrimero();
+    // el metrónomo a la vista: cuatro luces que se encienden una por pulso, para poder contar («Brakk llega al cuarto»)
+    var n = Math.floor((performance.now() - C.pulso0) / Tv), metro = document.getElementById("metro"), zona = document.querySelector(".cartas");
+    if (guia && quedan && zona) {
+      if (!metro) { metro = h("div", { class: "metro", id: "metro", "aria-hidden": "true" }, [h("i"), h("i"), h("i"), h("i")]); zona.parentNode.insertBefore(metro, zona); }
+      for (var q = 0; q < 4; q++) metro.children[q].className = q === n % 4 ? "on" : "";
+    } else if (metro) metro.remove();
+    if (guia && quedan && n !== C.ticN) { C.ticN = n; if (!C.rapido) SON.fx("pulso"); }
+  }
+  // Qué tal has entrado: se mide contra el pulso y se dice en la carta, para aprender.
+  function juzgarToque(i, tIni) {
+    if (!C || C.auto || C.pulso0 == null) return;
+    var vel = C.rapido ? 2 : 1, Tv = M.PULSO / vel, fase = ((tIni || performance.now()) - C.pulso0) % Tv, err = Math.min(fase, Tv - fase) * vel, pronto = fase > Tv / 2;
+    var margen = M.VENTANA_CHISPA * (1 + ((C.st.aliados[i].m && C.st.aliados[i].m.oido) || 0));
+    var c = document.getElementById("c" + i); if (!c) return; var caja = c.getBoundingClientRect();
+    var s = h("span", { style: "left:" + (caja.left + caja.width / 2) + "px;top:" + (caja.top - 6) + "px", class: "toque " + (err <= margen ? "bien" : (err <= margen * 2.2 ? "casi" : "mal")), text: err <= margen ? "¡A pulso!" : (err <= margen * 2.2 ? (pronto ? "Casi: pronto" : "Casi: tarde") : (pronto ? "Pronto" : "Tarde")) });
+    document.body.appendChild(s); setTimeout(function () { s.remove(); }, 900);   // fuera de la carta, para que no lo apague ni lo recorte
   }
   // Antes de que nadie actúe, señala con «1.º» al eco más lento: empezar por él es lo que deja sitio a los demás para sacar chispa.
   function marcarPrimero() {
     if (!C) return; var st = C.st, lento = -1, r = -1, libres = 0, alguien = st.aliados.some(function (a) { return a.vivo && a.actuo; });
-    st.aliados.forEach(function (a, j) { if (!a.vivo || a.actuo || M.inmovil(a)) return; libres++; var r0 = M.ritmo(a.id, a.hits)[0] * (1 - ((a.m && a.m.rapido) || 0)); if (r0 > r) { r = r0; lento = j; } });
+    st.aliados.forEach(function (a, j) { if (!a.vivo || a.actuo || M.inmovil(a)) return; libres++; var r0 = M.ritmo(a.id, a.hits)[0]; if (r0 > r) { r = r0; lento = j; } });
     st.aliados.forEach(function (a, j) {
       var c = document.getElementById("c" + j); if (!c) return; var o = c.querySelector(".orden");
       var toca = !C.auto && PREF.guia !== false && !alguien && libres >= 2 && j === lento && !st.fin;
@@ -1754,7 +1785,7 @@
     if (!V0.t_rafaga && st.aliados.some(function (a) { return a.vivo && !a.actuo && a.bb >= 100; })) return ["t_rafaga", "Barra azul llena: desliza esa carta hacia la derecha para lanzar su ráfaga."];
     if (!V0.t_guardia && st.turno >= 2) { if (st.aliados.some(function (a) { return a.guardia; }) || st.turno >= 5) V0.t_guardia = 1; else return ["t_guardia", "Desliza una carta hacia abajo, o mantenla pulsada, para cubrirte: recibe la mitad de daño."]; }
     if (!V0.t_objetivo && st.enemigos.filter(function (e) { return e.vivo; }).length >= 2 && st.turno >= 2) { if (st.turno >= 4) V0.t_objetivo = 1; else return ["t_objetivo", "Toca a un enemigo para elegir a quién pegan tus ecos."]; }
-    if (!V0.t_chispa && vivosA.length >= 2) { if (st.chispas > 0 || st.turno >= 6) V0.t_chispa = 1; else return ["t_chispa", "Chispa: empieza por el eco marcado «1.º» y toca a los demás cuando su aro llegue al borde. Si golpean a la vez, el golpe pega el doble. En automático casi no salen."]; }
+    if (!V0.t_chispa && vivosA.length >= 2) { if (st.chispas > 0 || st.turno >= 6) V0.t_chispa = 1; else return ["t_chispa", "Chispa: tu primer toque pone el pulso (las cuatro luces). Toca a los demás justo cuando su aro se cierra: sus golpes caerán a la vez y pegarán el doble. Empieza por el eco marcado «1.º», que es el más lento."]; }
     return null;
   }
   function pintarConsejo() {
@@ -1771,7 +1802,9 @@
     if (x.tipo === "fin") { C.pedirFin = true; quizaFin(); return; }
     if (x.tipo === "atacar") marcarObjetivo(C.st.objetivo);
     accion(x.tipo, x.i);
-    setTimeout(pasoAuto, C.rapido ? 210 : 420);   // el automático toca sin buscar el compás: saca pocas chispas
+    // El automático no lleva el compás: reparte sus toques fuera de pulso (130, 260, 65, 195 y 325 ms de desfase), así que casi no saca chispas.
+    var nAuto = C.st.aliados.filter(function (x) { return x.actuo; }).length, hAuto = M.HUECOS_AUTO[Math.min(nAuto, M.HUECOS_AUTO.length) - 1] || 530;
+    setTimeout(pasoAuto, hAuto / (C.rapido ? 2 : 1));
   }
 
   // ----- efectos -----
@@ -1954,7 +1987,7 @@
       else if (e.t === "gratis") { flotar("a" + e.i, "Ráfaga gratis", "parada"); C.gratis = e.i; espera = 0; }
       else if (e.t === "aturde") { fxAnim("e" + e.i, "fxa_aturdido", 600); flotar("e" + e.i, "Aturdido", "flojo"); var na = document.getElementById("e" + e.i); if (na) na.classList.add("aturdido"); espera = 0; }
       else if (e.t === "limite") { rotulo("Se acabó el tiempo", "peligro"); destello("#ef5a4c", true); temblar(true); espera = base * 6; }
-      else if (e.t === "turno") { enRafaga = null; sincronizar(); repintar(); espera = base * 0.5; }
+      else if (e.t === "turno") { enRafaga = null; pararPulso(); sincronizar(); repintar(); espera = base * 0.5; }
       else if (e.t === "pausa") { enRafaga = null; sincronizar(); repintar(); espera = base * 2; }
       else if (e.t === "victoria" || e.t === "derrota") espera = base * 3;
     RAF.en = enRafaga; return espera;

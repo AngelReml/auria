@@ -48,6 +48,7 @@
 
   // ---------- efectos ----------
   var FX = {
+    pulso: function (t) { nota(gFx, "sine", 660, t, 0.03, 0.05, 520); },   // el tic del metrónomo: bajo y corto, para no cansar
     toque: function (t) { nota(gFx, "triangle", 920, t, 0.05, 0.12, 1300); },
     golpe: function (t) { soplo(gFx, t, 0.09, 0.5, "lowpass", 2200, 500); nota(gFx, "sine", 150, t, 0.1, 0.5, 60); },
     fuerte: function (t) { soplo(gFx, t, 0.14, 0.7, "lowpass", 3200, 400); nota(gFx, "sine", 190, t, 0.16, 0.7, 50); nota(gFx, "square", 660, t, 0.06, 0.08, 330); },

@@ -494,14 +494,86 @@
 
   // ---------- ritmo ----------
   // Cada eco pega a su compás: los de un solo golpe tardan en descargar, los de muchos golpes empiezan pronto y pegan seguido.
-  // Devuelve en milisegundos cuándo cae cada golpe desde que lo tocas. Es fijo para cada eco: se aprende.
-  function semilla(id) { var x = 2166136261; for (var i = 0; i < id.length; i++) { x ^= id.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0) % 121 - 60; }
+  // =====================================================================
+  // EL COMPÁS
+  // =====================================================================
+  // Todo el combate va a pulso: un pulso son 400 ms. Cada eco tiene su compás, diseñado a mano por cómo se mueve en su oficio:
+  // cuántos pulsos tarda en llegar el primer golpe y qué pausas (corta = 1 pulso, larga = 2) hay entre los siguientes.
+  // Como todo cae sobre el mismo pulso, tocar a un eco justo en un pulso hace coincidir sus golpes con los de los compañeros: eso es la chispa.
+  // Aporrear a todos a la vez no sirve: caen fuera de pulso. Se aprende contando: «Brakk tarda cuatro; Kael, tres: le doy un pulso de ventaja».
+  M.PULSO = 400;
+  function semilla(id) { var x = 2166136261; for (var i = 0; i < id.length; i++) { x ^= id.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0) % 121 - 60; }   // un número fijo por nombre, para variar lo que no es compás
+  M.COMPAS = {
+    //        llega  pausas            nombre
+    kael:    [3, [1, 1],          "Tres tajos"],
+    dalia:   [3, [2],             "Raíz y brote"],
+    fenn:    [3, [1, 2],          "Dos sueltas y una apuntada"],
+    mirra:   [3, [1, 1, 1],       "Traca"],
+    brakk:   [4, [2],             "Martillo y yunque"],
+    nerea:   [2, [1, 1, 1],       "Estocadas al paso"],
+    osval:   [3, [1],             "Dos gotas"],
+    sirel:   [2, [1, 1, 2, 1],    "Abordaje"],
+    gorm:    [4, [2],             "Un solo golpe"],
+    ziva:    [2, [1, 1, 1, 1, 1], "Relámpago"],
+    tobias:  [2, [2, 1],          "Carga y doble descarga"],
+    rhaia:   [4, [1, 1],          "Galope"],
+    liora:   [2, [2],             "Escudo y maza"],
+    edrin:   [2, [1],             "Dos notas"],
+    ysolde:  [2, [2, 1, 1],       "Fanfarria"],
+    vesper:  [2, [1, 2],          "Dos cortes y el de gracia"],
+    morwen:  [3, [1, 2, 1],       "Letanía"],
+    azrak:   [4, [1],             "Mandoble doble"],
+    nacha:   [3, [2],             "Cucharón"],
+    corvin:  [2, [2, 1, 1, 1],    "Voltereta"],
+    saela:   [2, [2, 2],          "Vals"],
+    baldo:   [4, [1, 1],          "Salva"],
+    tizon:   [2, [1, 1],          "Dentelladas"],
+    maris:   [3, [1, 2],          "Brazada"],
+    tolo:    [4, [2],             "Red y remo"],
+    aina:    [4, [2],             "Campanada"],
+    anselm:  [3, [2, 2],          "Tres destellos"],
+    undina:  [3, [1, 1],          "Chorro"],
+    rosal:   [2, [1, 1, 1, 1],    "Zarza"],
+    boleto:  [3, [2, 1],          "Esporas"],
+    lince:   [2, [1, 1, 1, 2],    "Acecho"],
+    tronco:  [4, [1],             "Hachazos"],
+    avellana:[2, [1, 2, 1, 2],    "Aleteo"],
+    volta:   [4, [2, 1],          "Yunque y chispa"],
+    ferran:  [2, [2, 2],          "Tic, tac, tic"],
+    chispa:  [3, [2, 1],          "Engranaje"],
+    nube:    [4, [2, 2],          "Truenos"],
+    halcon:  [2, [1, 1],          "Picado"],
+    clarisa: [3, [2, 1],          "Encendido"],
+    gallo:   [2, [1],             "Maitines"],
+    aurel:   [3, [1],             "Reflejo"],
+    mielina: [2, [1],             "Zumbido"],
+    lucera:  [4, [1, 2],          "Conjunción"],
+    sepia:   [3, [1, 2],          "Trazo y firma"],
+    matias:  [4, [1],             "Las dos en punto"],
+    polilla: [2, [1, 1, 1, 1],    "Revoloteo"],
+    urraca:  [3, [1, 2],          "Regateo"],
+    tanido:  [3, [2, 2],          "Tres campanadas"],
+    ilda:    [3, [1, 1, 1],       "Marcha"],
+    nacar:   [4, [2, 2],          "Repique"],
+    sabina:  [3, [2, 1],          "Siembra"],
+    orfeo:   [3, [1, 2, 1],       "Medida y corte"],
+    clara:   [2, [2, 1],          "Amasado"],
+    nadie:   [2, [1, 2, 1, 2],    "Trazos"],
+    tam:     [2, [1, 1, 1, 1],    "Cinco dedos"],
+    hollis:  [4, [2],             "Paso y escudo"],
+    llum:    [3, [2, 1],          "Página y luz"],
+    ulric:   [3, [2, 1, 1],       "Trámite"],
+    eren:    [2, [1, 2],          "Uno, dos y gancho"]
+  };
+  M.compas = function (id) { var c = M.COMPAS[id] || [3, [1], "Compás llano"]; return { llega: c[0], pausas: c[1], n: c[2], peso: c[0] <= 2 ? "ligero" : (c[0] === 3 ? "medio" : "pesado") }; };
+  // Cuándo cae cada golpe, en milisegundos desde que lo tocas. Si un eco gana golpes (despertar, armas), repite su última pausa.
   M.ritmo = function (id, hits) {
-    var n = hits || D.HEROES[id].hits, ini = 640 - 75 * Math.min(6, n) + semilla(id), paso = 150 - 12 * Math.min(6, n), o = [];
-    for (var k = 0; k < n; k++) o.push(Math.max(120, ini + k * paso));
+    var c = M.compas(id), n = hits || D.HEROES[id].hits, o = [c.llega * M.PULSO];
+    for (var k = 1; k < n; k++) o.push(o[k - 1] + (c.pausas.length ? c.pausas[Math.min(k - 1, c.pausas.length - 1)] : 1) * M.PULSO);
     return o;
   };
-  M.VENTANA_CHISPA = 110;   // ms: dos golpes de ecos distintos sobre el mismo enemigo dentro de esta ventana hacen chispa
+  M.HUECOS_AUTO = [530, 530, 605, 530, 530];   // lo que espera el automático entre un eco y el siguiente: nunca cae en pulso
+  M.VENTANA_CHISPA = 55;   // ms: dos golpes de ecos distintos sobre el mismo enemigo a esta distancia o menos hacen chispa. Es estrecha a propósito: premia ir a pulso
   M.BONO_CHISPA = 2;   // una chispa dobla el golpe: es lo que separa jugar a compás de dejar el automático
 
   // Un golpe concreto de un plan. t es el instante en que cae (reloj del combate, en ms).
@@ -515,7 +587,7 @@
     espada:      { n: "Espada",      clase: "Filo",        peso: 1.0,  k: "normal",    v: [0.08, 0.14, 0.22], d: "Sus ataques normales pegan un {v} más." },
     mandoble:    { n: "Mandoble",    clase: "Filo pesado", peso: 1.25, k: "rompe",     v: [0.30, 0.60, 1.00], d: "Rompe las cargas del enemigo un {v} más rápido." },
     lanza:       { n: "Lanza",       clase: "Punta",       peso: 1.0,  k: "perf",      v: [0.10, 0.18, 0.28], d: "Sus ataques normales ignoran un {v} de la defensa." },
-    arco:        { n: "Arco",        clase: "Distancia",   peso: 0.9,  k: "rapido",    v: [0.15, 0.25, 0.35], d: "Sus golpes caen un {v} antes: cambia su compás." },
+    arco:        { n: "Arco",        clase: "Distancia",   peso: 0.9,  k: "oido",      v: [0.30, 0.50, 0.80], d: "Le vale un margen un {v} mayor para hacer chispa: perdona el pulso." },
     polvora:     { n: "Pólvora",     clase: "Distancia",   peso: 1.0,  k: "lleno",     v: [0.20, 0.35, 0.50], d: "Pega un {v} más a enemigos con la vida entera." },
     daga:        { n: "Daga",        clase: "Filo corto",  peso: 0.85, k: "doble",     v: [0.06, 0.11, 0.17], d: "Cada golpe tiene un {v} de repetirse a media fuerza." },
     puno:        { n: "Puños",       clase: "Golpe",       peso: 0.8,  k: "bbGolpe",   v: [3, 6, 9],          d: "Cada ataque le da {v} de ráfaga extra." },
@@ -1181,8 +1253,7 @@
     if (!raf) {
       var ei = idxObjetivo(st); if (ei < 0) return null;
       a.actuo = true; st.cadena = 0; plan.obj = ei; plan.mult = 1;
-      var rp = (a.m && a.m.rapido) || 0;
-      plan.golpes = M.ritmo(a.id, a.hits).map(function (x) { return Math.round(x * (1 - rp)); });
+      plan.golpes = M.ritmo(a.id, a.hits);
       return plan;
     }
     var coste = sup ? 200 : 100; if (a.bb < coste || tiene(a, "enraizado")) return null;
@@ -1191,10 +1262,10 @@
     plan.mult = b.pot * (sup ? M.SUPER : 1) * (a.raf || 1) * bono; plan.clase = b.tipo; plan.atraviesa = (!!a.rg.Despertar || !!(b.ef && (b.ef.franco || b.ef.ecoeco))) && b.tipo === "uno";
     ev.push({ t: "rafaga", i: i, n: b.n, el: a.el, tipo: b.tipo, sup: sup, cadena: st.cadena + 1, bono: bono });
     st.cadena += sup ? 2 : 1; if (st.cadena > st.mejorCadena) st.mejorCadena = st.cadena;
-    var retraso = sup ? 900 : 620;   // lo que dura la franja de la ráfaga antes de que empiecen a caer los golpes
+    var retraso = (sup ? 3 : 2) * M.PULSO;   // lo que dura la franja de la ráfaga antes de que empiecen a caer los golpes
     if (b.tipo === "cura" || b.tipo === "apoyo") { plan.golpes = [retraso]; plan.bono = bono; }
-    else if (b.tipo === "todos") { var n = sup ? 4 : 2; for (var k = 0; k < n; k++) plan.golpes.push(retraso + k * 170); plan.obj = "todos"; }
-    else { plan.obj = idxObjetivo(st); var r0 = M.ritmo(a.id, a.hits + (sup ? 5 : 2)); plan.golpes = r0.map(function (x, k) { return retraso + k * Math.max(70, (r0[1] || 200) - r0[0]); }); }
+    else if (b.tipo === "todos") { var n = sup ? 4 : 2; for (var k = 0; k < n; k++) plan.golpes.push(retraso + k * M.PULSO); plan.obj = "todos"; }
+    else { plan.obj = idxObjetivo(st); var r0 = M.ritmo(a.id, a.hits + (sup ? 5 : 2)); plan.golpes = r0.map(function (x, k) { return retraso + k * M.PULSO / 2; }); }   // la ráfaga cae a medio pulso: una andanada
     var mi = a.m || {};
     if (mi.impetu) subirBB(a, mi.impetu);
     if (mi.estela || mi.consuelo) st.aliados.forEach(function (x, j) { if (j !== i) subirBB(x, (mi.estela || 0) + (mi.consuelo || 0)); });
