@@ -8,6 +8,9 @@
 "atl_ei_var": {
 "pix": false
 },
+"atl_fx_1": {
+"pix": 1
+},
 "atl_ico_1": {
 "pix": 1
 },
@@ -29,6 +32,11 @@
 "p": 0.044,
 "pix": 1
 },
+"bat_aina_2": {
+"c": 0.684,
+"p": 0.051,
+"pix": 1
+},
 "bat_ancla_fantasma": {
 "c": 0.575,
 "p": 0.044,
@@ -42,6 +50,11 @@
 "bat_anselm": {
 "c": 0.602,
 "p": 0.141,
+"pix": 1
+},
+"bat_anselm_2": {
+"c": 0.492,
+"p": 0.057,
 "pix": 1
 },
 "bat_aprendiz_bobina": {
@@ -69,6 +82,11 @@
 "p": 0.098,
 "pix": 1
 },
+"bat_aurel_2": {
+"c": 0.587,
+"p": 0.05,
+"pix": 1
+},
 "bat_automata_oxidado": {
 "c": 0.741,
 "p": 0.045,
@@ -79,9 +97,19 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_avellana_2": {
+"c": 0.569,
+"p": 0.065,
+"pix": 1
+},
 "bat_azrak": {
 "c": 0.727,
 "p": 0.141,
+"pix": 1
+},
+"bat_azrak_2": {
+"c": 0.61,
+"p": 0.065,
 "pix": 1
 },
 "bat_baldo": {
@@ -89,14 +117,29 @@
 "p": 0.12,
 "pix": 1
 },
+"bat_baldo_2": {
+"c": 0.593,
+"p": 0.065,
+"pix": 1
+},
 "bat_boleto": {
 "c": 0.672,
 "p": 0.141,
 "pix": 1
 },
+"bat_boleto_2": {
+"c": 0.625,
+"p": 0.102,
+"pix": 1
+},
 "bat_brakk": {
 "c": 0.591,
 "p": 0.134,
+"pix": 1
+},
+"bat_brakk_2": {
+"c": 0.766,
+"p": 0.102,
 "pix": 1
 },
 "bat_buitre_notario": {
@@ -164,6 +207,11 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_chispa_2": {
+"c": 0.579,
+"p": 0.044,
+"pix": 1
+},
 "bat_chispa_errante": {
 "c": 0.329,
 "p": 0.059,
@@ -184,6 +232,11 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_clarisa_2": {
+"c": 0.617,
+"p": 0.042,
+"pix": 1
+},
 "bat_coloso_bobinas": {
 "c": 0.727,
 "p": 0.141,
@@ -197,6 +250,11 @@
 "bat_corvin": {
 "c": 0.781,
 "p": 0.044,
+"pix": 1
+},
+"bat_corvin_2": {
+"c": 0.586,
+"p": 0.102,
 "pix": 1
 },
 "bat_cuervo_brezo": {
@@ -214,6 +272,16 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_dalia_2": {
+"c": 0.683,
+"p": 0.087,
+"pix": 1
+},
+"bat_dalric_venn": {
+"c": 0.739,
+"p": 0.076,
+"pix": 1
+},
 "bat_diablillo": {
 "c": 0.555,
 "p": 0.076,
@@ -229,9 +297,19 @@
 "p": 0.091,
 "pix": 1
 },
+"bat_edrin_2": {
+"c": 0.69,
+"p": 0.05,
+"pix": 1
+},
 "bat_engranaje": {
 "c": 0.607,
 "p": 0.098,
+"pix": 1
+},
+"bat_eren": {
+"c": 0.793,
+"p": 0.078,
 "pix": 1
 },
 "bat_escorpion_sal": {
@@ -269,6 +347,31 @@
 "p": 0.044,
 "pix": 1
 },
+"bat_ev_ballestera": {
+"c": 0.79,
+"p": 0.076,
+"pix": 1
+},
+"bat_ev_contrabandista": {
+"c": 0.8,
+"p": 0.075,
+"pix": 1
+},
+"bat_ev_lancero": {
+"c": 0.746,
+"p": 0.074,
+"pix": 1
+},
+"bat_ev_soldada": {
+"c": 0.736,
+"p": 0.074,
+"pix": 1
+},
+"bat_ev_soldado": {
+"c": 0.752,
+"p": 0.074,
+"pix": 1
+},
 "bat_farol_errante": {
 "c": 0.754,
 "p": 0.068,
@@ -284,9 +387,19 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_fenn_2": {
+"c": 0.784,
+"p": 0.08,
+"pix": 1
+},
 "bat_ferran": {
 "c": 0.766,
 "p": 0.141,
+"pix": 1
+},
+"bat_ferran_2": {
+"c": 0.685,
+"p": 0.054,
 "pix": 1
 },
 "bat_forzudo": {
@@ -302,6 +415,11 @@
 "bat_gallo": {
 "c": 0.57,
 "p": 0.141,
+"pix": 1
+},
+"bat_gallo_2": {
+"c": 0.628,
+"p": 0.044,
 "pix": 1
 },
 "bat_gargola": {
@@ -329,6 +447,11 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_gorm_2": {
+"c": 0.58,
+"p": 0.05,
+"pix": 1
+},
 "bat_gota_centinela": {
 "c": 0.44,
 "p": 0.052,
@@ -354,6 +477,16 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_halcon_2": {
+"c": 0.646,
+"p": 0.044,
+"pix": 1
+},
+"bat_hollis": {
+"c": 0.798,
+"p": 0.076,
+"pix": 1
+},
 "bat_hortelano_nubes": {
 "c": 0.789,
 "p": 0.141,
@@ -372,6 +505,11 @@
 "bat_kael": {
 "c": 0.646,
 "p": 0.134,
+"pix": 1
+},
+"bat_kael_2": {
+"c": 0.686,
+"p": 0.048,
 "pix": 1
 },
 "bat_kraken_sogas": {
@@ -399,14 +537,34 @@
 "p": 0.106,
 "pix": 1
 },
+"bat_lince_2": {
+"c": 0.703,
+"p": 0.045,
+"pix": 1
+},
 "bat_liora": {
 "c": 0.633,
 "p": 0.141,
 "pix": 1
 },
+"bat_liora_2": {
+"c": 0.624,
+"p": 0.051,
+"pix": 1
+},
+"bat_llum": {
+"c": 0.769,
+"p": 0.074,
+"pix": 1
+},
 "bat_lucera": {
 "c": 0.752,
 "p": 0.06,
+"pix": 1
+},
+"bat_lucera_2": {
+"c": 0.638,
+"p": 0.052,
 "pix": 1
 },
 "bat_maestro_pista": {
@@ -424,6 +582,11 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_maris_2": {
+"c": 0.766,
+"p": 0.102,
+"pix": 1
+},
 "bat_mascaron": {
 "c": 0.703,
 "p": 0.141,
@@ -432,6 +595,11 @@
 "bat_matias": {
 "c": 0.609,
 "p": 0.141,
+"pix": 1
+},
+"bat_matias_2": {
+"c": 0.581,
+"p": 0.073,
 "pix": 1
 },
 "bat_medusa": {
@@ -444,6 +612,11 @@
 "p": 0.068,
 "pix": 1
 },
+"bat_mielina_2": {
+"c": 0.643,
+"p": 0.087,
+"pix": 1
+},
 "bat_minero_escoria": {
 "c": 0.709,
 "p": 0.06,
@@ -452,6 +625,11 @@
 "bat_mirra": {
 "c": 0.813,
 "p": 0.047,
+"pix": 1
+},
+"bat_mirra_2": {
+"c": 0.619,
+"p": 0.087,
 "pix": 1
 },
 "bat_molino_desbocado": {
@@ -479,6 +657,11 @@
 "p": 0.044,
 "pix": 1
 },
+"bat_morwen_2": {
+"c": 0.688,
+"p": 0.08,
+"pix": 1
+},
 "bat_murcielago_ceniza": {
 "c": 0.432,
 "p": 0.068,
@@ -489,14 +672,29 @@
 "p": 0.06,
 "pix": 1
 },
+"bat_nacha_2": {
+"c": 0.586,
+"p": 0.102,
+"pix": 1
+},
 "bat_nerea": {
 "c": 0.523,
 "p": 0.141,
 "pix": 1
 },
+"bat_nerea_2": {
+"c": 0.664,
+"p": 0.042,
+"pix": 1
+},
 "bat_nube": {
 "c": 0.656,
 "p": 0.141,
+"pix": 1
+},
+"bat_nube_2": {
+"c": 0.661,
+"p": 0.045,
 "pix": 1
 },
 "bat_organillo_tubos": {
@@ -512,6 +710,11 @@
 "bat_osval": {
 "c": 0.688,
 "p": 0.141,
+"pix": 1
+},
+"bat_osval_2": {
+"c": 0.684,
+"p": 0.043,
 "pix": 1
 },
 "bat_oveja_nube": {
@@ -544,6 +747,11 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_polilla_2": {
+"c": 0.703,
+"p": 0.045,
+"pix": 1
+},
 "bat_pulpo_tintorero": {
 "c": 0.484,
 "p": 0.113,
@@ -564,6 +772,11 @@
 "p": 0.134,
 "pix": 1
 },
+"bat_rhaia_2": {
+"c": 0.525,
+"p": 0.05,
+"pix": 1
+},
 "bat_roble_andante": {
 "c": 0.754,
 "p": 0.127,
@@ -574,9 +787,19 @@
 "p": 0.043,
 "pix": 1
 },
+"bat_rosal_2": {
+"c": 0.54,
+"p": 0.065,
+"pix": 1
+},
 "bat_saela": {
 "c": 0.763,
 "p": 0.044,
+"pix": 1
+},
+"bat_saela_2": {
+"c": 0.701,
+"p": 0.043,
 "pix": 1
 },
 "bat_salamandra": {
@@ -589,6 +812,11 @@
 "p": 0.043,
 "pix": 1
 },
+"bat_sepia_2": {
+"c": 0.609,
+"p": 0.102,
+"pix": 1
+},
 "bat_seta_saltarina": {
 "c": 0.55,
 "p": 0.083,
@@ -599,14 +827,29 @@
 "p": 0.106,
 "pix": 1
 },
+"bat_sirel_2": {
+"c": 0.773,
+"p": 0.102,
+"pix": 1
+},
 "bat_sirenido": {
 "c": 0.692,
 "p": 0.083,
 "pix": 1
 },
+"bat_tam": {
+"c": 0.689,
+"p": 0.076,
+"pix": 1
+},
 "bat_tanido": {
 "c": 0.719,
 "p": 0.141,
+"pix": 1
+},
+"bat_tanido_2": {
+"c": 0.691,
+"p": 0.065,
 "pix": 1
 },
 "bat_titere": {
@@ -619,9 +862,19 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_tizon_2": {
+"c": 0.492,
+"p": 0.073,
+"pix": 1
+},
 "bat_tobias": {
 "c": 0.853,
 "p": 0.053,
+"pix": 1
+},
+"bat_tobias_2": {
+"c": 0.602,
+"p": 0.102,
 "pix": 1
 },
 "bat_tocon": {
@@ -634,6 +887,11 @@
 "p": 0.076,
 "pix": 1
 },
+"bat_tolo_2": {
+"c": 0.535,
+"p": 0.094,
+"pix": 1
+},
 "bat_tragafuegos": {
 "c": 0.606,
 "p": 0.046,
@@ -644,14 +902,34 @@
 "p": 0.127,
 "pix": 1
 },
+"bat_tronco_2": {
+"c": 0.504,
+"p": 0.042,
+"pix": 1
+},
+"bat_ulric": {
+"c": 0.773,
+"p": 0.076,
+"pix": 1
+},
 "bat_undina": {
 "c": 0.609,
 "p": 0.141,
 "pix": 1
 },
+"bat_undina_2": {
+"c": 0.658,
+"p": 0.054,
+"pix": 1
+},
 "bat_urraca": {
 "c": 0.754,
 "p": 0.127,
+"pix": 1
+},
+"bat_urraca_2": {
+"c": 0.641,
+"p": 0.102,
 "pix": 1
 },
 "bat_vagoneta": {
@@ -669,6 +947,11 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_vesper_2": {
+"c": 0.706,
+"p": 0.05,
+"pix": 1
+},
 "bat_vidriera_mayor": {
 "c": 0.598,
 "p": 0.134,
@@ -684,6 +967,11 @@
 "p": 0.113,
 "pix": 1
 },
+"bat_volta_2": {
+"c": 0.65,
+"p": 0.042,
+"pix": 1
+},
 "bat_wyrm_fundicion": {
 "c": 0.742,
 "p": 0.083,
@@ -694,9 +982,19 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_ysolde_2": {
+"c": 0.593,
+"p": 0.065,
+"pix": 1
+},
 "bat_ziva": {
 "c": 0.76,
 "p": 0.12,
+"pix": 1
+},
+"bat_ziva_2": {
+"c": 0.682,
+"p": 0.055,
 "pix": 1
 },
 "ei_arma_01": {
@@ -1896,6 +2194,9 @@
 "r": 6,
 "rows": 7
 },
+"esc_ev_portada": {
+"pix": 0
+},
 "esc_final_amanecer": {
 "pix": 0
 },
@@ -2028,7 +2329,13 @@
 "exp_dalia": {
 "pix": 0
 },
+"exp_dalric_venn": {
+"pix": 0
+},
 "exp_edrin": {
+"pix": 0
+},
+"exp_eren": {
 "pix": 0
 },
 "exp_fenn": {
@@ -2046,6 +2353,9 @@
 "exp_halcon": {
 "pix": 0
 },
+"exp_hollis": {
+"pix": 0
+},
 "exp_hulda": {
 "pix": 0
 },
@@ -2056,6 +2366,9 @@
 "pix": 0
 },
 "exp_liora": {
+"pix": 0
+},
+"exp_llum": {
 "pix": 0
 },
 "exp_lucera": {
@@ -2115,6 +2428,9 @@
 "exp_sirel": {
 "pix": 0
 },
+"exp_tam": {
+"pix": 0
+},
 "exp_tanido": {
 "pix": 0
 },
@@ -2136,6 +2452,9 @@
 "exp_ulmo": {
 "pix": 0
 },
+"exp_ulric": {
+"pix": 0
+},
 "exp_undina": {
 "pix": 0
 },
@@ -2155,16 +2474,31 @@
 "pix": 0
 },
 "fx_aviso_jefe": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_circulo_eco": {
 "pix": 1
 },
 "fx_critico": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_curacion": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_eco_comun": {
 "pix": 1
@@ -2176,85 +2510,215 @@
 "pix": 1
 },
 "fx_empeora": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_golpe_alba": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_golpe_bosque": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_golpe_brasa": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_golpe_marea": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_golpe_ocaso": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_golpe_rayo": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 3
 },
 "fx_gran_rafaga_alba": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_gran_rafaga_bosque": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_gran_rafaga_brasa": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_gran_rafaga_marea": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_gran_rafaga_ocaso": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_gran_rafaga_rayo": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_guardia": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_impacto": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_mejora": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_paralisis": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 3
 },
 "fx_rafaga_alba": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_rafaga_bosque": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_rafaga_brasa": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_rafaga_marea": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_rafaga_ocaso": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_rafaga_rayo": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_revivir": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_subida_nivel": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "fx_tajo": {
 "pix": 1
 },
 "fx_veneno": {
-"pix": 1
+"atl": "atl_fx_1",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 3
 },
 "ico_amuleto_guardia": {
 "atl": "atl_ico_1",
@@ -3058,10 +3522,24 @@
 ],
 "pix": 0
 },
+"ilu_aina_2": {
+"cab": [
+0.498,
+0.014
+],
+"pix": 0
+},
 "ilu_anselm": {
 "cab": [
 0.567,
 0.05
+],
+"pix": 0
+},
+"ilu_anselm_2": {
+"cab": [
+0.515,
+0.01
 ],
 "pix": 0
 },
@@ -3072,10 +3550,24 @@
 ],
 "pix": 0
 },
+"ilu_aurel_2": {
+"cab": [
+0.527,
+0.001
+],
+"pix": 0
+},
 "ilu_avellana": {
 "cab": [
 0.489,
 0.112
+],
+"pix": 0
+},
+"ilu_avellana_2": {
+"cab": [
+0.496,
+0.016
 ],
 "pix": 0
 },
@@ -3086,10 +3578,24 @@
 ],
 "pix": 0
 },
+"ilu_azrak_2": {
+"cab": [
+0.43,
+0.009
+],
+"pix": 0
+},
 "ilu_baldo": {
 "cab": [
 0.445,
 0.05
+],
+"pix": 0
+},
+"ilu_baldo_2": {
+"cab": [
+0.517,
+0.005
 ],
 "pix": 0
 },
@@ -3107,10 +3613,24 @@
 ],
 "pix": 0
 },
+"ilu_boleto_2": {
+"cab": [
+0.466,
+0.017
+],
+"pix": 0
+},
 "ilu_brakk": {
 "cab": [
 0.473,
 0.05
+],
+"pix": 0
+},
+"ilu_brakk_2": {
+"cab": [
+0.47,
+0.0
 ],
 "pix": 0
 },
@@ -3135,10 +3655,24 @@
 ],
 "pix": 0
 },
+"ilu_chispa_2": {
+"cab": [
+0.571,
+0.099
+],
+"pix": 0
+},
 "ilu_clarisa": {
 "cab": [
 0.539,
 0.05
+],
+"pix": 0
+},
+"ilu_clarisa_2": {
+"cab": [
+0.42,
+0.003
 ],
 "pix": 0
 },
@@ -3149,10 +3683,31 @@
 ],
 "pix": 0
 },
+"ilu_corvin_2": {
+"cab": [
+0.462,
+0.004
+],
+"pix": 0
+},
 "ilu_dalia": {
 "cab": [
 0.473,
 0.05
+],
+"pix": 0
+},
+"ilu_dalia_2": {
+"cab": [
+0.464,
+0.005
+],
+"pix": 0
+},
+"ilu_dalric_venn": {
+"cab": [
+0.48,
+0.051
 ],
 "pix": 0
 },
@@ -3163,10 +3718,31 @@
 ],
 "pix": 0
 },
+"ilu_edrin_2": {
+"cab": [
+0.484,
+0.004
+],
+"pix": 0
+},
+"ilu_eren": {
+"cab": [
+0.529,
+0.051
+],
+"pix": 0
+},
 "ilu_fenn": {
 "cab": [
 0.48,
 0.05
+],
+"pix": 0
+},
+"ilu_fenn_2": {
+"cab": [
+0.445,
+0.009
 ],
 "pix": 0
 },
@@ -3177,10 +3753,24 @@
 ],
 "pix": 0
 },
+"ilu_ferran_2": {
+"cab": [
+0.487,
+0.008
+],
+"pix": 0
+},
 "ilu_gallo": {
 "cab": [
 0.454,
 0.05
+],
+"pix": 0
+},
+"ilu_gallo_2": {
+"cab": [
+0.554,
+0.021
 ],
 "pix": 0
 },
@@ -3191,10 +3781,31 @@
 ],
 "pix": 0
 },
+"ilu_gorm_2": {
+"cab": [
+0.391,
+0.104
+],
+"pix": 0
+},
 "ilu_halcon": {
 "cab": [
 0.478,
 0.095
+],
+"pix": 0
+},
+"ilu_halcon_2": {
+"cab": [
+0.51,
+0.007
+],
+"pix": 0
+},
+"ilu_hollis": {
+"cab": [
+0.517,
+0.051
 ],
 "pix": 0
 },
@@ -3212,10 +3823,24 @@
 ],
 "pix": 0
 },
+"ilu_kael_2": {
+"cab": [
+0.482,
+0.004
+],
+"pix": 0
+},
 "ilu_lince": {
 "cab": [
 0.478,
 0.09
+],
+"pix": 0
+},
+"ilu_lince_2": {
+"cab": [
+0.445,
+0.005
 ],
 "pix": 0
 },
@@ -3226,10 +3851,31 @@
 ],
 "pix": 0
 },
+"ilu_liora_2": {
+"cab": [
+0.509,
+0.011
+],
+"pix": 0
+},
+"ilu_llum": {
+"cab": [
+0.558,
+0.051
+],
+"pix": 0
+},
 "ilu_lucera": {
 "cab": [
 0.545,
 0.05
+],
+"pix": 0
+},
+"ilu_lucera_2": {
+"cab": [
+0.48,
+0.022
 ],
 "pix": 0
 },
@@ -3240,10 +3886,24 @@
 ],
 "pix": 0
 },
+"ilu_maris_2": {
+"cab": [
+0.514,
+0.012
+],
+"pix": 0
+},
 "ilu_matias": {
 "cab": [
 0.415,
 0.05
+],
+"pix": 0
+},
+"ilu_matias_2": {
+"cab": [
+0.51,
+0.004
 ],
 "pix": 0
 },
@@ -3254,10 +3914,24 @@
 ],
 "pix": 0
 },
+"ilu_mielina_2": {
+"cab": [
+0.542,
+0.005
+],
+"pix": 0
+},
 "ilu_mirra": {
 "cab": [
 0.505,
 0.05
+],
+"pix": 0
+},
+"ilu_mirra_2": {
+"cab": [
+0.446,
+0.004
 ],
 "pix": 0
 },
@@ -3268,10 +3942,24 @@
 ],
 "pix": 0
 },
+"ilu_morwen_2": {
+"cab": [
+0.463,
+0.007
+],
+"pix": 0
+},
 "ilu_nacha": {
 "cab": [
 0.518,
 0.05
+],
+"pix": 0
+},
+"ilu_nacha_2": {
+"cab": [
+0.463,
+0.002
 ],
 "pix": 0
 },
@@ -3282,10 +3970,24 @@
 ],
 "pix": 0
 },
+"ilu_nerea_2": {
+"cab": [
+0.457,
+0.005
+],
+"pix": 0
+},
 "ilu_nube": {
 "cab": [
 0.55,
 0.063
+],
+"pix": 0
+},
+"ilu_nube_2": {
+"cab": [
+0.499,
+0.017
 ],
 "pix": 0
 },
@@ -3303,6 +4005,13 @@
 ],
 "pix": 0
 },
+"ilu_osval_2": {
+"cab": [
+0.403,
+0.012
+],
+"pix": 0
+},
 "ilu_peio": {
 "cab": [
 0.503,
@@ -3317,10 +4026,24 @@
 ],
 "pix": 0
 },
+"ilu_polilla_2": {
+"cab": [
+0.452,
+0.008
+],
+"pix": 0
+},
 "ilu_rhaia": {
 "cab": [
 0.457,
 0.108
+],
+"pix": 0
+},
+"ilu_rhaia_2": {
+"cab": [
+0.438,
+0.005
 ],
 "pix": 0
 },
@@ -3331,6 +4054,13 @@
 ],
 "pix": 0
 },
+"ilu_rosal_2": {
+"cab": [
+0.475,
+0.005
+],
+"pix": 0
+},
 "ilu_saela": {
 "cab": [
 0.309,
@@ -3338,10 +4068,24 @@
 ],
 "pix": 0
 },
+"ilu_saela_2": {
+"cab": [
+0.532,
+0.009
+],
+"pix": 0
+},
 "ilu_sepia": {
 "cab": [
 0.499,
 0.05
+],
+"pix": 0
+},
+"ilu_sepia_2": {
+"cab": [
+0.462,
+0.005
 ],
 "pix": 0
 },
@@ -3359,10 +4103,31 @@
 ],
 "pix": 0
 },
+"ilu_sirel_2": {
+"cab": [
+0.488,
+0.001
+],
+"pix": 0
+},
+"ilu_tam": {
+"cab": [
+0.544,
+0.051
+],
+"pix": 0
+},
 "ilu_tanido": {
 "cab": [
 0.512,
 0.05
+],
+"pix": 0
+},
+"ilu_tanido_2": {
+"cab": [
+0.458,
+0.008
 ],
 "pix": 0
 },
@@ -3373,6 +4138,13 @@
 ],
 "pix": 0
 },
+"ilu_tizon_2": {
+"cab": [
+0.556,
+0.102
+],
+"pix": 0
+},
 "ilu_tobias": {
 "cab": [
 0.472,
@@ -3380,10 +4152,24 @@
 ],
 "pix": 0
 },
+"ilu_tobias_2": {
+"cab": [
+0.473,
+0.007
+],
+"pix": 0
+},
 "ilu_tolo": {
 "cab": [
 0.454,
 0.05
+],
+"pix": 0
+},
+"ilu_tolo_2": {
+"cab": [
+0.509,
+0.005
 ],
 "pix": 0
 },
@@ -3401,10 +4187,24 @@
 ],
 "pix": 0
 },
+"ilu_tronco_2": {
+"cab": [
+0.486,
+0.006
+],
+"pix": 0
+},
 "ilu_ulmo": {
 "cab": [
 0.511,
 0.05
+],
+"pix": 0
+},
+"ilu_ulric": {
+"cab": [
+0.529,
+0.051
 ],
 "pix": 0
 },
@@ -3415,10 +4215,24 @@
 ],
 "pix": 0
 },
+"ilu_undina_2": {
+"cab": [
+0.433,
+0.016
+],
+"pix": 0
+},
 "ilu_urraca": {
 "cab": [
 0.497,
 0.05
+],
+"pix": 0
+},
+"ilu_urraca_2": {
+"cab": [
+0.472,
+0.001
 ],
 "pix": 0
 },
@@ -3429,10 +4243,24 @@
 ],
 "pix": 0
 },
+"ilu_vesper_2": {
+"cab": [
+0.545,
+0.002
+],
+"pix": 0
+},
 "ilu_volta": {
 "cab": [
 0.465,
 0.084
+],
+"pix": 0
+},
+"ilu_volta_2": {
+"cab": [
+0.479,
+0.008
 ],
 "pix": 0
 },
@@ -3443,10 +4271,24 @@
 ],
 "pix": 0
 },
+"ilu_ysolde_2": {
+"cab": [
+0.498,
+0.004
+],
+"pix": 0
+},
 "ilu_ziva": {
 "cab": [
 0.52,
 0.095
+],
+"pix": 0
+},
+"ilu_ziva_2": {
+"cab": [
+0.449,
+0.004
 ],
 "pix": 0
 },
@@ -3476,6 +4318,21 @@
 },
 "map_costa_tormenta_jefe": {
 "pix": 1
+},
+"map_ev_1": {
+"pix": 0
+},
+"map_ev_2": {
+"pix": 0
+},
+"map_ev_3": {
+"pix": 0
+},
+"map_ev_4": {
+"pix": 0
+},
+"map_ev_5": {
+"pix": 0
 },
 "map_feria_ultima_noche_exterior": {
 "pix": 1

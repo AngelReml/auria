@@ -64,6 +64,7 @@
   // Aspecto despierto: los ecos normales lo estrenan con la quinta estrella. Los de leyenda ya llegan con cinco, así que lo estrenan al recuperar su recuerdo.
   function despierta(id) { var u = S && S.unidades[id]; if (!u) return false; return M.esLeyenda(id) ? (u.res || 0) >= 1 : M.estrellas(id, u) >= 5; }
   function sprite(id, el, pose, despierto, grande) {
+    if (D.ENEMIGOS[id] && D.ENEMIGOS[id].arte) id = D.ENEMIGOS[id].arte;   // criaturas que comparten dibujo con otra
     var hoja = (despierto && hay("bat_" + id + "_2")) ? "bat_" + id + "_2" : "bat_" + id;
     var d = h("div", { class: "arte" });
     if (hay(hoja)) {
@@ -85,7 +86,8 @@
   }
   var EXPR = { neutral: 0, alegre: 1, enfadado: 2, triste: 3, sorprendido: 4, decidido: 5 };
   function retrato(id, expr) {
-    if (id.indexOf("e:") === 0) { var en = D.ENEMIGOS[id.slice(2)]; return sprite(id.slice(2), en.el, 0, false, en.jefe); }
+    if (id.indexOf("e:") === 0 && !hay("exp_" + id.slice(2))) { var en = D.ENEMIGOS[id.slice(2)]; return sprite(id.slice(2), en.el, 0, false, en.jefe); }
+    if (id.indexOf("e:") === 0) id = id.slice(2);   // un rival con cara propia (expresiones) habla como cualquier personaje
     var el = D.HEROES[id] ? D.HEROES[id].el : null, d;
     if (hay("exp_" + id)) {
       var c = EXPR[expr] || 0; d = h("div", { class: "arte" });
@@ -172,11 +174,11 @@
   }
   function pintar() {
     app.textContent = "";
-    var f = { titulo: vTitulo, plaza: vPlaza, mapa: vMapa, ecos: vEcos, eco: vEco, talentos: vTalentos, diario: vDiario, bestiario: vBestiario, torre: vTorre, arena: vArena, encargos: vEncargos, logros: vLogros, altar: vAltar, forja: vForja, tienda: vTienda, granja: vGranja, combate: vCombate }[V.n];
+    var f = { titulo: vTitulo, plaza: vPlaza, mapa: vMapa, ecos: vEcos, eco: vEco, talentos: vTalentos, diario: vDiario, bestiario: vBestiario, torre: vTorre, arena: vArena, encargos: vEncargos, logros: vLogros, evento: vEvento, altar: vAltar, forja: vForja, tienda: vTienda, granja: vGranja, combate: vCombate }[V.n];
     // Si una pantalla falla al pintarse, no se queda en blanco: se dice qué ha pasado y se ofrece una salida, con la partida a salvo.
     try { f(); } catch (e) { pantallaRota(V.n, e); return; }
     if (V.n === "combate") { pintarConsejo(); marcarPrimero(); } musicaDeVista();
-    var atras = { eco: "ecos", talentos: "eco", diario: "plaza", bestiario: "plaza", torre: "plaza", arena: "plaza", encargos: "plaza", logros: "plaza" }[V.n];
+    var atras = { eco: "ecos", talentos: "eco", diario: "plaza", bestiario: "plaza", torre: "plaza", arena: "plaza", encargos: "plaza", logros: "plaza", evento: "plaza" }[V.n];
     if (atras) { var p0 = app.querySelector(".cuerpo .pad"); if (p0) p0.style.paddingTop = "58px"; }
     if (atras) app.appendChild(h("button", { class: "volver-fijo", type: "button", "aria-label": "Volver", on: function () { ir(atras); } }, [h("span", { text: "‹" })]));
   }
@@ -252,6 +254,7 @@
       hoyTarj("ico_menu_tienda", "T", "Oferta", "Cambia hoy", M.catalogo(S).hoy.some(function (a) { return !a.agotado; }), function () { ir("tienda", { tienda: "hoy" }); }),
       hoyTarj("ico_menu_objetivo", "!", "Mejorar", L.length ? L.length + (L.length > 1 ? " ideas" : " idea") : "Al día", L.length, function () { var cj = cajaConsejos("Qué puedes mejorar ahora", 6); if (!cj) return; var cp = h("div", { class: "capa centro", on: function () { cp.remove(); } }, [cj]); app.appendChild(cp); })]));
     // edificios: todo lo que hay, con su icono
+    var evA = M.eventoAbierto(S), evR = M.eventoResumen(S);
     var tA = M.torreAbierta(S), aA = M.arenaAbierta(S), bt = M.bestiario(S), bv = bt.reduce(function (s, z) { return s + z.vistos; }, 0);
     function edif(vista, ico, letra, nombre, sub, abierto, aviso, extra) {
       return h("button", { class: "edif" + (abierto ? "" : " cerrado"), type: "button", "aria-disabled": abierto ? null : "true", on: function () { if (!abierto) return; if (typeof vista === "function") vista(); else ir(vista, extra); } },
@@ -260,12 +263,13 @@
     var conPuntos = S.escuadron.filter(function (id) { return M.puntosTalento(id, S.unidades[id]).libres > 0; }).length;
     cont.appendChild(h("div", { class: "edificios" }, [
       edif("mapa", "ico_menu_misiones", "M", "Mapa", "Historia", true, 0),
-      edif("ecos", "ico_menu_ecos", "E", "Ecos", Object.keys(S.unidades).filter(function (k) { return !M.esLeyenda(k); }).length + " de " + Object.keys(D.HEROES).filter(function (k) { return !M.esLeyenda(k); }).length, true, conPuntos),
+      edif("ecos", "ico_menu_ecos", "E", "Ecos", Object.keys(S.unidades).filter(function (k) { return !M.esLeyenda(k) && !M.esSecreto(k); }).length + " de " + Object.keys(D.HEROES).filter(function (k) { return !M.esLeyenda(k) && !M.esSecreto(k); }).length, true, conPuntos),
       edif("altar", "ico_menu_altar", "A", "Altar", S.gemas >= M.COSTE_INVOCAR ? Math.floor(S.gemas / M.COSTE_INVOCAR) + " llamadas" : "Faltan gemas", true, S.gemas >= M.COSTE_INVOCAR ? Math.floor(S.gemas / M.COSTE_INVOCAR) : 0),
       edif("forja", "ico_menu_forja", "F", "Forja", "Armas y equipo", true, 0),
       edif("torre", pref("ico_torre", "ico_menu_arena"), "T", "Torre", tA ? "Piso " + M.pisoTorre(S) : "Tras las Colinas", tA, 0),
       edif("arena", "ico_ficha_arena", "A", "Arena", aA ? M.rangoArena(S).n : "Tras las Minas", aA, 0),
       edif("logros", pref("ico_logros", "ico_cofre_dorado"), "L", "Logros", "Metas", true, pen.logros),
+      edif("evento", "ico_fragmento_recuerdo", "O", "Otro mundo", evA ? evR.ecos + " de 5 ecos" : "Tras las Colinas", evA, evA && evR.hechas < 25 && !S.vistas.evento ? 1 : 0),
       edif("diario", "ico_menu_archivo", "D", "Diario", "La historia", true, 0),
       edif("bestiario", "ico_menu_logros", "B", "Bestiario", bv + " criaturas", true, 0),
       edif("granja", "ico_mat_bosque_1", "H", "Huerto", "Cada 20 min", true, cos),
@@ -315,7 +319,7 @@
     var capas = app.querySelectorAll(".capa"), c = capas[capas.length - 1];
     if (c && !c.classList.contains("resultado")) { c.remove(); return true; }
     if (V.n === "combate" || V.n === "titulo") return V.n === "combate";
-    var atras = { eco: "ecos", talentos: "eco", diario: "plaza", bestiario: "plaza", torre: "plaza", arena: "plaza", encargos: "plaza", logros: "plaza" }[V.n];
+    var atras = { eco: "ecos", talentos: "eco", diario: "plaza", bestiario: "plaza", torre: "plaza", arena: "plaza", encargos: "plaza", logros: "plaza", evento: "plaza" }[V.n];
     if (atras) { ir(atras); return true; }
     if (V.n !== "plaza") { ir("plaza"); return true; }
     return false;
@@ -501,7 +505,7 @@
       return M.poder(b, S.unidades[b]) - M.poder(a, S.unidades[a]);
     });
     pad.appendChild(ids.length ? h("div", { class: "rejilla" }, ids.map(fichaEco)) : h("p", { class: "tenue", text: "No tienes ecos de " + filtro + " todavía." }));
-    pad.appendChild(h("p", { class: "tenue", text: "Tienes " + Object.keys(S.unidades).filter(function (k) { return !M.esLeyenda(k); }).length + " de " + Object.keys(D.HEROES).filter(function (k) { return !M.esLeyenda(k); }).length + " ecos, " + Object.keys(S.unidades).filter(M.esLeyenda).length + " de 6 leyendas y " + (S.medallas || 0) + " medallas de eco." }));
+    pad.appendChild(h("p", { class: "tenue", text: "Tienes " + Object.keys(S.unidades).filter(function (k) { return !M.esLeyenda(k) && !M.esSecreto(k); }).length + " de " + Object.keys(D.HEROES).filter(function (k) { return !M.esLeyenda(k) && !M.esSecreto(k); }).length + " ecos, " + Object.keys(S.unidades).filter(M.esSecreto).length + " de 5 secretos, " + Object.keys(S.unidades).filter(M.esLeyenda).length + " de 6 leyendas y " + (S.medallas || 0) + " medallas de eco." }));
     c.appendChild(pad); fondoDe(c, "pan_escuadron"); marco("Ecos", c);
   }
   function vEco() {
@@ -607,6 +611,37 @@
     var vistos = {}, L = []; F.olas.forEach(function (o) { o.forEach(function (e) { if (!vistos[e.id]) { vistos[e.id] = 1; L.push(e); } }); });
     return h("div", { class: "tira-en" }, L.map(function (e) { var b = M.baseEnemigo(e.id), heroe = e.id.indexOf("eco:") === 0;
       return h("div", { class: "en-mini" + (b.jefe && !heroe ? " jefe" : ""), style: "--c:" + D.COLOR[b.el] }, [h("div", { class: "bestia-img" }, [heroe ? sprite(e.id.slice(4), b.el, 0) : sprite(e.id, b.el, 0)]), punto(b.el)]); }));
+  }
+  // ---------- evento: El libro de otro mundo ----------
+  function vEvento() {
+    var c = h("div", { class: "cuerpo" }), pad = h("div", { class: "pad evento" }), E = M.EVENTO, R = M.eventoResumen(S);
+    if (!S.vistas.evento) { S.vistas.evento = 1; guardar(); }
+    var abiertas = R.zonas.filter(function (x) { return x.abierta; }), zSel = V.zona != null ? V.zona : (abiertas.filter(function (x) { return !x.completa; })[0] || abiertas[abiertas.length - 1] || R.zonas[0]).z;
+    pad.appendChild(h("div", { class: "ev-portada", style: hay("esc_ev_portada") ? "background-image:url(" + url("esc_ev_portada") + ")" : "" }, [h("div", { class: "ev-velo" }),
+      h("small", { text: E.sub }), h("h1", { text: E.n }), h("p", { text: E.d }),
+      h("div", { class: "ev-progreso" }, [medidor(R.hechas, 25, "xp"), h("span", { text: R.hechas + " de 25 · " + R.ecos + " de 5 ecos secretos" })])]));
+    pad.appendChild(h("div", { class: "ev-ecos" }, R.zonas.map(function (x) {
+      var b = D.HEROES[x.eco], tengo = !!S.unidades[x.eco];
+      return h("button", { class: "ev-eco" + (tengo ? " mio" : "") + (x.z === zSel ? " sel" : "") + (x.abierta ? "" : " cerrada"), type: "button", style: "--c:" + D.COLOR[b.el], "aria-label": x.n,
+        on: function () { ir("evento", { zona: x.z }); } }, [h("div", { class: "ev-cara" + (tengo ? "" : " sombra") }, [retrato(x.eco, tengo ? "alegre" : "neutral")]), h("b", { text: tengo ? b.n : "???" }), h("small", { text: x.hechas + "/5" })]);
+    })));
+    var Z = R.zonas[zSel], b = D.HEROES[Z.eco], tengo = !!S.unidades[Z.eco], med = Math.round(S.escuadron.reduce(function (s, id) { return s + S.unidades[id].lv; }, 0) / S.escuadron.length);
+    var caja = h("div", { class: "caja ev-zona" }, [
+      h("div", { class: "ev-zona-cab", style: hay(Z.fondo) ? "background-image:url(" + url(Z.fondo) + ")" : "" }, [h("div", { class: "ev-velo" }), h("h2", { text: (zSel + 1) + ". " + Z.n }),
+        h("div", { class: "fila tenue" }, [h("span", { text: "Nivel " + Z.lvl + " a " + (Z.lvl + 8) }), h("span", { class: med >= Z.lvl ? "" : "falta", text: "· tu escuadrón: " + med })])])]);
+    if (!Z.abierta) caja.appendChild(h("p", { class: "tenue", text: M.eventoAbierto(S) ? "Se abre al completar «" + R.zonas[zSel - 1].n + "»." : "El libro se abre cuando sueltes las Colinas de Brezo." }));
+    else {
+      caja.appendChild(h("div", { class: "ev-fases" }, Z.fases.map(function (nom, f) {
+        var hecha = M.eventoHecha(S, zSel, f), puede = f <= Z.hechas;
+        return h("button", { class: "ev-fase" + (hecha ? " hecha" : "") + (f === Z.hechas ? " ahora" : ""), type: "button", disabled: !puede, on: function () { empezarSecreta("ev:" + zSel + ":" + f); } },
+          [h("i", { text: hecha ? "✓" : String(f + 1) }), h("span", { text: nom }), f === 4 ? h("small", { text: zSel === 4 ? "Gran jefe" : "Jefe" }) : null]);
+      })));
+      caja.appendChild(h("div", { class: "ev-premio" }, [h("div", { class: "ev-cara" + (tengo ? "" : " sombra") }, [retrato(Z.eco, "decidido")]),
+        h("div", {}, [h("b", { text: tengo ? b.n + " ya está contigo" : "Al completar los cinco combates" }), h("small", { text: tengo ? b.t + " · " + b.el : "Se une un eco secreto. No sale del altar." })])]));
+    }
+    pad.appendChild(caja);
+    pad.appendChild(h("p", { class: "tenue", style: "text-align:center", text: "Esto pasa en otro libro: nada de aquí cambia la historia del sol parado. La primera vez, cada combate da 5 gemas y el último de cada zona, 20 y dos medallas." }));
+    c.appendChild(pad); fondoDe(c, "pan_diario", 0.86); marco("Otro mundo", c);
   }
   function vTorre() {
     var c = h("div", { class: "cuerpo" }), pad = h("div", { class: "pad torre" }), n = M.pisoTorre(S), F = M.faseTorre(n), med = Math.round(S.escuadron.reduce(function (s, id) { return s + S.unidades[id].lv; }, 0) / S.escuadron.length);
@@ -1360,13 +1395,13 @@
       else if (F.f === 0) { clave = "ent-" + F.r + "-" + F.a; if (D.ENTRADAS[F.r + "-" + F.a] && !S.hechas[M.clave(F.r, F.a, F.f)]) lineas = D.ENTRADAS[F.r + "-" + F.a]; else clave = null; }
       else { var kp = F.r + "-" + F.a + "-" + F.f; clave = "paso-" + kp; if (D.PASOS && D.PASOS[kp] && !S.hechas[M.clave(F.r, F.a, F.f)]) lineas = D.PASOS[kp]; else clave = null; }
     }
-    if ((F.vecino || F.recuerdo) && F.apertura && !S.hechas["S:" + F.secreta]) lineas = F.apertura;
+    if ((F.vecino || F.recuerdo || F.evento) && F.apertura && !S.hechas["S:" + F.secreta]) lineas = F.apertura;
     if (lineas && clave) { S.vistas[clave] = 1; guardar(); }
     var els = M.elementosDeFase(F), cuenta = {}; F.olas.forEach(function (o) { o.forEach(function (e) { var el = M.baseEnemigo(e.id).el; cuenta[el] = (cuenta[el] || 0) + 1; }); });
     var mas = els.slice().sort(function (x, y) { return cuenta[y] - cuenta[x]; })[0], contra = D.ELEMENTOS.filter(function (x) { return D.FUERTE[x] === mas; })[0];
     var rum = D.RUMORES[F.r], rumor = rum[Math.floor(Math.random() * rum.length)];
     var cab = h("div", { class: "ent-cab" }, [
-      h("div", { class: "ent-reg", text: z.n + (F.t ? " · " + M.GRADOS[F.t].n : "") + (F.recuerdo ? " · Recuerdo de " + D.HEROES[F.recuerdo].n : (F.vecino ? " · Encargo de " + (D.NOMBRES[F.vecino] || "un vecino") : (F.secreta ? " · Misión secreta" : ""))) }),
+      h("div", { class: "ent-reg", text: (F.evento ? M.EVENTO.n : z.n) + (F.t ? " · " + M.GRADOS[F.t].n : "") + (F.evento ? "" : F.recuerdo ? " · Recuerdo de " + D.HEROES[F.recuerdo].n : (F.vecino ? " · Encargo de " + (D.NOMBRES[F.vecino] || "un vecino") : (F.secreta ? " · Misión secreta" : ""))) }),
       h("h1", { text: F.nombre }),
       h("div", { class: "ent-els" }, [h("span", { text: "Enemigos: " })].concat(els.map(function (el) { return h("span", { class: "ent-el" }, [punto(el), " " + el]); }))),
       M.vetaDe(F) ? h("div", { class: "ent-els" }, [h("span", { text: "Veta del lugar: " }), h("span", { class: "ent-el" }, [punto(M.vetaDe(F)), " " + M.vetaDe(F)]), h("span", { text: " (materiales)" })]) : null,
@@ -1382,7 +1417,7 @@
   function sincronizar() {
     var st = C.st;
     C.vis = { a: st.aliados.map(function (x) { return { hp: x.hp, bb: x.bb, vivo: x.vivo, pose: x.vivo ? 0 : 5 }; }),
-              e: st.enemigos.map(function (x) { return { hp: x.hp, vivo: x.vivo, pose: x.vivo ? (x.carga ? 1 : 0) : 5 }; }) };
+              e: st.enemigos.map(function (x) { return { hp: x.hp, max: x.max, vivo: x.vivo, pose: x.vivo ? (x.carga ? 1 : 0) : 5 }; }) };
     C.marcados = {}; st.enemigos.forEach(function (e, k) { var it = M.intencion(st, k); if (it && it.tipo === "r") C.marcados[e.marca] = e.n; });
   }
   var POS_E = [[5, 70], [24, 84], [3, 97]], POS_A = [[53, 68], [76, 68], [60, 83], [82, 83], [51, 97], [74, 97]];
@@ -1416,7 +1451,7 @@
     app.appendChild(h("div", { class: "barra" }, [h("div", { class: "tit", text: st.fase.nombre + (st.fase.t ? " · " + M.GRADOS[st.fase.t].n : "") }),
       h("span", { class: "tenue", text: "Oleada " + (st.ola + 1) + " de " + st.fase.olas.length + " · Turno " + st.turno })]));
     var tipoFondo = st.fase.granJefe ? "jefe" : (st.fase.a >= 2 ? "interior" : "exterior");
-    var campo = h("div", { class: "campo", id: "campo" }); campo.appendChild(fondo("map_" + z.id + "_" + tipoFondo, z.cielo));
+    var campo = h("div", { class: "campo", id: "campo" }); campo.appendChild(fondo(st.fase.fondo || ("map_" + z.id + "_" + tipoFondo), z.cielo));
     campo.appendChild(h("div", { class: "suelo" }));
     campo.appendChild(h("div", { class: "aviso", id: "aviso" }));
     campo.appendChild(h("div", { class: "chispas", id: "chispas" }));
@@ -1677,8 +1712,14 @@
   function efecto(id, nombre, color, cls, ms) {
     var n = document.getElementById(id); if (!n) return;
     var f = h("div", { class: "fx " + (hay(nombre) ? "" : "css ") + (cls || "") });
-    if (hay(nombre)) f.style.backgroundImage = "url(" + url(nombre) + ")"; else f.style.setProperty("--c", color || "#f0a23c");
-    n.appendChild(f); setTimeout(function () { f.remove(); }, ms || 380);
+    var enLamina = hay(nombre) && ARTE[nombre].atl;
+    if (hay(nombre) && !enLamina) f.style.backgroundImage = "url(" + url(nombre) + ")"; else if (!hay(nombre)) f.style.setProperty("--c", color || "#f0a23c");
+    n.appendChild(f);
+    if (enLamina) {   // el efecto vive en una lámina: se pinta en un cuadrado centrado, del tamaño que tendría solo
+      var r = f.getBoundingClientRect(), lado = Math.max(8, Math.min(r.width, r.height)), q = h("i", { style: "position:absolute;left:50%;top:50%;width:" + lado + "px;height:" + lado + "px;margin:-" + (lado / 2) + "px 0 0 -" + (lado / 2) + "px;image-rendering:pixelated;" + bg(nombre) });
+      f.appendChild(q);
+    }
+    setTimeout(function () { f.remove(); }, ms || 380);
   }
   function tajo(id, color) {
     var n = document.getElementById(id); if (!n) return;
@@ -1743,7 +1784,8 @@
         var at = e.lado === "a" ? "a" : "e", df = e.lado === "a" ? "e" : "a", vd = C.vis[df][e.a];
         pose(at, e.de, enRafaga ? 4 : 2, base * 1.6);
         var tgt = df === "e" ? st.enemigos[e.a] : st.aliados[e.a];
-        if (vd) { vd.hp = Math.max(0, vd.hp - e.d); barraVida(df + e.a, vd.hp, tgt.max); if (df === "a") barraVida("c" + e.a, vd.hp, tgt.max); }
+        var maxT = (df === "e" && vd && vd.max) || (tgt && tgt.max) || 1;   // el último golpe de una oleada llega cuando el motor ya va por la siguiente
+        if (vd) { vd.hp = Math.max(0, vd.hp - e.d); barraVida(df + e.a, vd.hp, maxT); if (df === "a") barraVida("c" + e.a, vd.hp, maxT); }
         var n = document.getElementById(df + e.a); if (n) { n.classList.remove("golpe"); void n.offsetWidth; n.classList.add("golpe"); }
         var atacante = e.lado === "a" ? st.aliados[e.de] : st.enemigos[e.de], col = D.COLOR[atacante.el];
         tajo(df + e.a, col);
@@ -1751,8 +1793,8 @@
         FX.golpe(df + e.a, atacante.el, e.el > 1 || e.fuerte || !!enRafaga);
         if (e.parada) { FX.escudo("a" + e.a, true); flotar("a" + e.a, "¡Parada perfecta!", "parada"); var vp = C.vis.a[e.a]; if (vp) { vp.bb = Math.min(200, vp.bb + 30); barraBB(e.a, vp.bb); } }
         else if (e.guardia) FX.escudo("a" + e.a, false);
-        if (e.lado === "a" && tgt.carga) { var rb = document.getElementById("rup" + e.a); if (rb) rb.firstChild.style.width = Math.min(100, 100 * tgt.dCarga / M.umbralRuptura(tgt)) + "%"; }
-        var gordo = tgt && e.d > tgt.max * 0.18;
+        if (e.lado === "a" && tgt && tgt.carga) { var rb = document.getElementById("rup" + e.a); if (rb) rb.firstChild.style.width = Math.min(100, 100 * tgt.dCarga / M.umbralRuptura(tgt)) + "%"; }
+        var gordo = e.d > maxT * 0.18;
         if (gordo || enRafaga) temblar(enRafaga === "sup" || (gordo && df === "a"));
         if (df === "a") { var cc = document.getElementById("c" + e.a); if (cc) { cc.classList.remove("herida"); void cc.offsetWidth; cc.classList.add("herida"); } }
         flotar(df + e.a, e.d + (e.el > 1 ? "!" : ""), e.chispa ? "chispa" : (e.el > 1 ? "fuerte" : ((e.el < 1 || e.guardia || e.escudo) ? "flojo" : "")));
@@ -1874,7 +1916,7 @@
     function seguir() {
       C = null;
       ((F.t || F.secreta) ? function (k, fn) { fn(); } : escenaUnaVez)("post-" + clave, function () {
-        var fin0 = function () { if (!F.t && !F.secreta && F.r === 7 && F.granJefe && !S.final) elegirFinal(); else if (F.recuerdo) ir("eco", { eco: F.recuerdo }); else ir(F.torre ? "torre" : (F.arena ? "arena" : (F.vecino ? "plaza" : "mapa"))); };
+        var fin0 = function () { if (!F.t && !F.secreta && F.r === 7 && F.granJefe && !S.final) elegirFinal(); else if (F.recuerdo) ir("eco", { eco: F.recuerdo }); else if (F.evento) ir("evento", { zona: F.evento.z }); else ir(F.torre ? "torre" : (F.arena ? "arena" : (F.vecino ? "plaza" : "mapa"))); };
         var luego = function () {
           if (!r.secretas || !r.secretas.length) { fin0(); return; }
           var sc = r.secretas[0];
@@ -1899,7 +1941,7 @@
     SON.musica(null);
     function fiesta() { FX.celebrar(); SON.fx("victoria"); SON.vibra([40, 60, 40, 60, 120]); setTimeout(function () { SON.fx(raros ? "raro" : "premio"); }, 1100); }
     var cierre = r.primera && !F.t && !F.secreta && D.CIERRES && D.CIERRES[clave];
-    if (r.primera && (F.vecino || F.recuerdo) && F.cierre) cierre = F.cierre;
+    if (r.primera && (F.vecino || F.recuerdo || F.evento) && F.cierre) cierre = F.cierre;
     var cv = h("div", { class: "capa centro victoria resultado" }, [h("div", { class: "caja" }, [cinta("ui_cinta_victoria", "Victoria"), h("h2", { text: r.primera ? "Fase superada" : "Otra vez tuya" }),
       raros ? h("div", { class: "aviso-raro", text: raros > 1 ? "¡" + raros + " hallazgos raros!" : "¡Hallazgo raro!" }) : null,
       rejilla(premios),

@@ -693,6 +693,27 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .campo-url{width:100%;margin:8px 0;padding:9px 10px;border-radius:8px;border:1px solid var(--linea);background:var(--panel2);color:inherit;font:14px system-ui}
 .act-url summary{color:var(--tenue);font-size:13px;padding:6px 0}
 .capa.centro>.caja{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);overflow-y:auto;overscroll-behavior:contain}
+.ev-portada{position:relative;border-radius:14px;overflow:hidden;padding:16px 14px 12px;background:#2a2340 center/cover;border:1px solid var(--linea);min-height:150px;display:flex;flex-direction:column;justify-content:flex-end}
+.ev-velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,14,28,.25),rgba(18,14,28,.9) 70%)}
+.ev-portada>*:not(.ev-velo){position:relative}
+.ev-portada small{font:700 11px/1 system-ui;letter-spacing:.14em;text-transform:uppercase;color:#ffd76a}
+.ev-portada h1{font:800 24px/1.1 var(--display);margin:4px 0 6px}.ev-portada p{margin:0 0 8px;font-size:13.5px;line-height:1.4;color:#e6ddf0}
+.ev-progreso{display:flex;flex-direction:column;gap:4px}.ev-progreso span{font-size:12px;color:#cfc4dd}
+.ev-ecos{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.ev-eco{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;border:1px solid var(--linea);background:var(--panel);color:inherit;font:inherit;min-height:44px}
+.ev-eco.sel{border-color:#ffd76a;box-shadow:0 0 10px rgba(255,215,106,.35)}.ev-eco.cerrada{opacity:.5}
+.ev-eco b{font-size:12px}.ev-eco small{font-size:11px;color:var(--tenue)}
+.ev-cara{position:relative;width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid var(--c,#888);background:#1c1728;flex:none}
+.ev-cara .arte{position:absolute;inset:0;background-repeat:no-repeat}.ev-cara.sombra .arte{filter:brightness(0) opacity(.75)}
+.ev-zona{padding:0!important;overflow:hidden}.ev-zona>p{padding:12px}
+.ev-zona-cab{position:relative;padding:34px 12px 10px;background:#2a2340 center 35%/cover}.ev-zona-cab>*:not(.ev-velo){position:relative}.ev-zona-cab h2{margin:0 0 2px}
+.ev-fases{display:flex;flex-direction:column;gap:6px;padding:10px 12px}
+.ev-fase{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 10px;border-radius:10px;border:1px solid var(--linea);background:var(--panel2);color:inherit;font:inherit;text-align:left}
+.ev-fase i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 13px system-ui;font-style:normal;background:#3a3050;flex:none}
+.ev-fase span{flex:1}.ev-fase small{color:#ffb36a;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.ev-fase.hecha i{background:#3f7a52}.ev-fase.ahora{border-color:#ffd76a}.ev-fase.ahora i{background:#ffd76a;color:#2a1a05}.ev-fase:disabled{opacity:.45}
+.ev-premio{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--linea);background:rgba(255,215,106,.06)}
+.ev-premio b{display:block;font-size:14px}.ev-premio small{color:var(--tenue);font-size:12px}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01s!important;transition:none!important}}
 </style>
 </head>

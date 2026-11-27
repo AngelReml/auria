@@ -18,6 +18,29 @@
   };
   Object.keys(LEYENDAS).forEach(function (id) { var L = LEYENDAS[id]; L.rar = 5; L.leyenda = true; D.HEROES[id] = L; D.NOMBRES[id] = L.n; });
   M.esLeyenda = function (id) { return !!(D.HEROES[id] && D.HEROES[id].leyenda); };
+
+  // ECOS SECRETOS: no salen del altar. Se unen al completar cada zona del evento «El libro de otro mundo» (colaboración con Elden Ivalice).
+  var SECRETOS = {
+    tam:    { n: "Tam",    t: "Huérfano de la calle",       el: "Rayo",   hp: 400, atk: 124, def: 88,  hits: 5, bb: { n: "Cinco dedos",        tipo: "todos", pot: 2.0 } },
+    hollis: { n: "Hollis", t: "Soldado retirado",           el: "Bosque", hp: 520, atk: 104, def: 128, hits: 2, bb: { n: "Formación cerrada",  tipo: "todos", pot: 1 } },
+    llum:   { n: "Llum",   t: "Lectora de otro mundo",      el: "Alba",   hp: 440, atk: 112, def: 108, hits: 3, bb: { n: "Luz de casa",        tipo: "cura",  pot: 0.4 } },
+    ulric:  { n: "Ulric",  t: "Agente con ganas de acabar", el: "Ocaso",  hp: 430, atk: 134, def: 92,  hits: 4, bb: { n: "Último servicio",    tipo: "uno",   pot: 3.4 } },
+    eren:   { n: "Eren",   t: "Lector de otro mundo",       el: "Brasa",  hp: 470, atk: 130, def: 104, hits: 3, bb: { n: "Porque sí",          tipo: "uno",   pot: 3.2 } }
+  };
+  Object.keys(SECRETOS).forEach(function (id) { var X = SECRETOS[id]; X.rar = 4; X.secreto = true; D.HEROES[id] = X; D.NOMBRES[id] = X.n; });
+  M.esSecreto = function (id) { return !!(D.HEROES[id] && D.HEROES[id].secreto); };
+  M.deAltar = function (id) { return !D.HEROES[id].secreto; };
+  var ENEMIGOS_EVENTO = {
+    ev_soldado:        { n: "Soldado del clan",   el: "Brasa",  hp: 130, atk: 36, def: 26 },
+    ev_soldada:        { n: "Soldada del clan",   el: "Marea",  hp: 120, atk: 38, def: 22 },
+    ev_lancero:        { n: "Lancero a sueldo",   el: "Rayo",   hp: 115, atk: 42, def: 18 },
+    ev_ballestera:     { n: "Ballestera a sueldo", el: "Bosque", hp: 100, atk: 46, def: 14 },
+    ev_contrabandista: { n: "Contrabandista",     el: "Ocaso",  hp: 110, atk: 40, def: 16 },
+    ev_capitan:        { n: "Capitán del clan",   el: "Brasa",  hp: 480, atk: 46, def: 38, jefe: 1, sub: 1, arte: "ev_soldado" },
+    dalric_venn:       { n: "Dalric Venn",        el: "Ocaso",  hp: 950, atk: 54, def: 46, jefe: 1 }
+  };
+  Object.keys(ENEMIGOS_EVENTO).forEach(function (k) { D.ENEMIGOS[k] = ENEMIGOS_EVENTO[k]; });
+  D.NOMBRES.dalric_venn = "Dalric Venn";
   M.PROB_LEYENDA = 0.01;      // una de cada cien llamadas
   M.SEGURO_LEYENDA = 100;     // y como mucho cien llamadas seguidas sin que responda una
 
@@ -108,7 +131,7 @@
     save.sinLeyenda = (save.sinLeyenda || 0) + 1;
     var r = rng(), rar = r < 0.10 ? 4 : (r < 0.40 ? 3 : 2);
     if (rng() < M.PROB_LEYENDA || save.sinLeyenda >= M.SEGURO_LEYENDA) { rar = 5; save.sinLeyenda = 0; }
-    var pool = Object.keys(D.HEROES).filter(function (id) { return D.HEROES[id].rar === rar; });
+    var pool = Object.keys(D.HEROES).filter(function (id) { return D.HEROES[id].rar === rar && !D.HEROES[id].secreto; });
     if (rar === 5) { var faltan = pool.filter(function (id) { return !save.unidades[id]; }); if (faltan.length) pool = faltan; }
     var id = pool[Math.floor(rng() * pool.length)], nuevo = M.unir(save, id);
     return { id: id, nuevo: nuevo, medallas: nuevo ? 0 : M.MEDALLAS_POR_REPETIDO[rar], leyenda: rar === 5 };
@@ -248,6 +271,7 @@
   M.secreta = function (id) {
     if (id.indexOf("torre:") === 0) { var n = +id.slice(6); return { id: id, r: (n - 1) % 8, tipo: "torre", n: "Torre · piso " + n, d: n % 10 === 0 ? "Un gran jefe guarda este piso." : (n % 5 === 0 ? "Un jefe guarda este piso." : "La Torre no tiene tarde ni mañana. Solo el piso siguiente.") }; }
     if (id.indexOf("arena:") === 0) return { id: id, r: 0, tipo: "arena", n: "Arena", d: "Otro gremio ha llamado a los suyos. Aquí nadie se va: solo se mide." };
+    if (id.indexOf("ev:") === 0) { var pe = id.split(":"); return M.EVENTO.zonas[+pe[1]] && +pe[2] >= 0 && +pe[2] < 5 ? { id: id, r: Math.min(7, +pe[1] + 1), tipo: "evento", z: +pe[1], f: +pe[2], n: M.EVENTO.zonas[+pe[1]].n, d: M.EVENTO.n } : null; }
     if (id.indexOf("rec:") === 0) { var mm = D.MEMORIAS[id.slice(4)]; return mm ? { id: id, r: mm.r, tipo: "recuerdo", eco: id.slice(4), n: mm.n, d: "Un recuerdo de " + D.HEROES[id.slice(4)].n + "." } : null; }
     if (id.indexOf("vec:") === 0) { var vv = M.VECINOS.filter(function (x) { return x.id === id.slice(4); })[0]; return { id: id, r: vv.r, tipo: "vecino", n: vv.mis.n, d: vv.mis.d, pide: vv.mis.pide }; }
     return M.SECRETAS.filter(function (s) { return s.id === id; })[0];
@@ -257,6 +281,7 @@
     if (id.indexOf("arena:") === 0) return M.arenaAbierta(save);
     if (id.indexOf("vec:") === 0) return M.regionesHechas(save) >= M.secreta(id).pide;
     if (id.indexOf("rec:") === 0) return M.recuerdo(save, id.slice(4)).abierto;
+    if (id.indexOf("ev:") === 0) { var se = M.secreta(id), ze = M.eventoZona(save, se.z); return ze.abierta && se.f <= ze.hechas; }
     var s = M.secreta(id); return !!s && !!save.hechas[s.req];
   };
   M.faseSecreta = function (id, save) {
@@ -264,6 +289,7 @@
     if (id.indexOf("arena:") === 0) return M.faseArena(save);
     if (id.indexOf("vec:") === 0) return M.faseVecino(id.slice(4));
     if (id.indexOf("rec:") === 0) return M.faseRecuerdo(id.slice(4), save);
+    if (id.indexOf("ev:") === 0) { var qe = M.secreta(id); return M.faseEvento(qe.z, qe.f); }
     var s = M.secreta(id), zona = D.ZONAS[s.r], raid = s.tipo === "raid";
     var g = M.indice(s.r, raid ? 4 : 2, 4), ge = g + (raid ? 45 : 15), lvl = 1 + Math.round(ge * M.CFG.nivPorFase), trucos = raid ? 4 : 2;
     function mk(idE, extra) { var o = { id: idE, lvl: lvl, g: 99, ge: ge, trucos: trucos, t: 0 }; for (var k in extra) o[k] = extra[k]; return o; }
@@ -306,7 +332,7 @@
   M.rivalArena = function (save) {
     cuenta(save); var v = save.arena.v, s = (v * 7919 + 13) >>> 0;
     function rnd() { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }
-    var ids = Object.keys(D.HEROES).filter(function (k) { return !D.HEROES[k].leyenda; }), n = v >= 12 ? 4 : 3, eq = [];
+    var ids = Object.keys(D.HEROES).filter(function (k) { return !D.HEROES[k].leyenda && !D.HEROES[k].secreto; }), n = v >= 12 ? 4 : 3, eq = [];
     while (eq.length < n) { var id = ids[Math.floor(rnd() * ids.length)]; if (eq.indexOf(id) < 0) eq.push(id); }
     var med = Math.round(save.escuadron.reduce(function (t, id) { return t + save.unidades[id].lv; }, 0) / save.escuadron.length);
     return { n: GREMIOS[v % GREMIOS.length], ecos: eq, lvl: Math.max(3, med - 4 + Math.floor(v / 3)), v: v };
@@ -819,6 +845,48 @@
     return { r: mm.r, a: 2, f: 2, t: 0, g: M.indice(mm.r, 2, 2), ge: ge, nombre: mm.n, lvl: lvl, olas: [[mk(c[2], { arq: 2, pos: 0 }), mk(c[5], { arq: 5, pos: 1 })], [mk(c[0], { arq: 0, pos: 0 }), mk(c[3], { arq: 3, pos: 1 })]],
       jefe: false, granJefe: false, trucos: 1, secreta: "rec:" + id, recuerdo: id, limite: 0, apertura: guion(mm.a), cierre: guion(mm.c) };
   };
+  // EVENTO «El libro de otro mundo»: cinco zonas de cinco combates. Al completar cada zona se une un eco secreto.
+  // Es una colaboración con Elden Ivalice y queda fuera del canon de Auria: nada de lo que pasa aquí toca la historia del sol parado.
+  M.EVENTO = { id: "otro_mundo", n: "El libro de otro mundo", sub: "Colaboración · Elden Ivalice", pide: 1,
+    d: "En el archivo ha aparecido un libro que no es de aquí. Quien lo abre, cruza. Al otro lado hay dos hermanos que buscan el camino a casa y un clan que cobra por encontrarlos antes.",
+    zonas: [
+      { n: "El barranco",        eco: "tam",    lvl: 12, fondo: "map_ev_1", com: ["ev_contrabandista", "ev_lancero", "ev_soldado"] },
+      { n: "El lavadero",        eco: "hollis", lvl: 24, fondo: "map_ev_2", com: ["ev_soldado", "ev_soldada", "ev_ballestera"] },
+      { n: "La mina del clan",   eco: "llum",   lvl: 36, fondo: "map_ev_3", com: ["ev_lancero", "ev_contrabandista", "ev_soldada"] },
+      { n: "La plaza del tablón", eco: "ulric", lvl: 48, fondo: "map_ev_4", com: ["ev_ballestera", "ev_soldado", "ev_lancero"] },
+      { n: "Las ruinas",         eco: "eren",   lvl: 60, fondo: "map_ev_5", com: ["ev_soldada", "ev_ballestera", "ev_contrabandista"] }
+    ] };
+  var EV_FASES = ["Primer paso", "Rastro", "Emboscada", "Lo que guardan", "Quien manda aquí"];
+  var EV_GUION = {
+    "0-0": { a: "narrador:El libro se abre solo por una página en blanco. Al otro lado huele a polvo y a tomillo.|kael:Esto no es Auria.|dalia:Aquí el sol se mueve. Míralo.|tam+:¿Sois de los del libro? Menos mal. Corred, que vienen cobrando." },
+    "0-4": { c: "tam:Los buscan a los dos. Un chico y una chica, con ropa rara. Dan cien por cada uno.|kael:¿Y tú por qué no cobras?|tam-:Porque el chico me dio su pan sin preguntarme nada. Eso no se vende.|tam+:Os llevo. Me sé todos los atajos y casi todos los tejados." },
+    "1-0": { a: "narrador:Junto al arroyo, un viejo llena una jarra. Lleva hombreras de soldado y ninguna prisa.|hollis:Si venís a alistarme, llegáis treinta años tarde.|tam:Es Hollis. No obedece a nadie. Es lo mejor que tiene." },
+    "1-4": { c: "hollis-:Me pasé la vida cumpliendo órdenes bien dadas para cosas mal pensadas.|dalia:¿Y ahora?|hollis:Ahora hay dos críos perdidos y un clan con contrato. Para eso no hace falta orden.|hollis+:Llevo la jarra. No se discute." },
+    "2-0": { a: "tam:La chica está abajo. La tienen copiando un libro: dicen que solo ella sabe leerlo.|kael:¿Presa?|tam:Ellos lo llaman «contrato de servicios».|hollis:He firmado unos cuantos de esos. Se sale igual: por la puerta." },
+    "2-4": { c: "llum:¿Venís de otro libro? Qué alivio. Pensaba que éramos los únicos que se habían caído en uno.|dalia:¿Estás bien?|llum:Yo sí. Mi hermano no para: ve a alguien en apuros y va. No lo piensa.|kael:Me suena.|llum+:Entonces sabéis dónde buscarlo: donde haya más lío." },
+    "3-0": { a: "narrador:En la plaza, un hombre con capa lee el tablón de encargos sin ganas.|ulric:«Dos lectores, vivos. Paga el clan Venn.» Me faltan tres encargos para acabar el servicio y me toca este.|llum:¿Y lo vas a cobrar?|ulric-:Estoy decidiendo cuánto me importa." },
+    "3-4": { c: "ulric:He contado. Veintiséis años, once de servicio y ni una sola cosa de la que presumir.|ulric:Entregar a dos críos no me iba a arreglar la cuenta.|hollis:Bienvenido al retiro, chaval.|ulric+:No me llames chaval. Y sé por dónde sube Venn a las ruinas." },
+    "4-0": { a: "narrador:En lo alto de las ruinas, un chico con una capa roja sujeta una puerta. Detrás hay gente del pueblo.|eren:¡Llum! ¡No subas, que son muchos!|llum:¡He traído a otros muchos!|e:dalric_venn:Qué escena. Lástima que yo cobre por lector entregado y no por lágrima." },
+    "4-4": { c: "e:dalric_venn-:Contrato incumplido. Voy a tener que devolver el anticipo.|eren:Podías no haberlo firmado.|e:dalric_venn:Chico, todo el mundo necesita una razón para hacer las cosas. La mía pagaba bien.|eren+:Yo no. Si alguien necesita ayuda, voy. No hay más.|llum:Ya os lo dije.|kael:La página de vuelta sigue abierta. ¿Volvéis a casa?|eren:Aún no. Aquí queda gente con contratos. Pero si os hace falta una mano al otro lado… llamadnos." }
+  };
+  M.eventoAbierto = function (save) { return M.regionesHechas(save) >= M.EVENTO.pide; };
+  M.eventoHecha = function (save, z, f) { return !!save.hechas["S:ev:" + z + ":" + f]; };
+  M.eventoZona = function (save, z) {
+    var Z = M.EVENTO.zonas[z], hechas = 0; for (var f = 0; f < 5; f++) if (M.eventoHecha(save, z, f)) hechas++;
+    var abierta = M.eventoAbierto(save) && (z === 0 || M.eventoZona(save, z - 1).completa);
+    return { z: z, n: Z.n, eco: Z.eco, lvl: Z.lvl, fondo: Z.fondo, hechas: hechas, completa: hechas >= 5, abierta: abierta, siguiente: Math.min(4, hechas), fases: EV_FASES };
+  };
+  M.eventoResumen = function (save) { var zs = M.EVENTO.zonas.map(function (_, z) { return M.eventoZona(save, z); }); return { zonas: zs, hechas: zs.reduce(function (s, x) { return s + x.hechas; }, 0), ecos: zs.filter(function (x) { return x.completa; }).length }; };
+  M.faseEvento = function (z, f) {
+    var Z = M.EVENTO.zonas[z], lvl = Z.lvl + f * 2, ge = Math.round((lvl - 1) / M.CFG.nivPorFase), c = Z.com, tr = Math.min(3, z), G = EV_GUION[z + "-" + f] || {};
+    function mk(idE, extra) { var o = { id: idE, lvl: lvl, g: 99, ge: Math.min(ge, 60 + z * 10), trucos: tr, t: 0, mhp: z >= 3 ? 0.75 : 1 }; for (var k in extra) o[k] = extra[k]; return o; }
+    var olas = [[mk(c[0], { arq: (z + f) % 8, pos: 0 }), mk(c[1], { arq: (z + f + 3) % 8, pos: 1 })], [mk(c[1], { arq: (f + 5) % 8, pos: 0 }), mk(c[2], { arq: (z + 2) % 8, pos: 1 }), mk(c[0], { arq: (f + 1) % 8, pos: 2 })]];
+    if (f === 4) olas.push(z === 4 ? [mk("dalric_venn", { pos: 0 }), mk("ev_ballestera", { arq: 5, pos: 1 }), mk("ev_soldado", { arq: 0, pos: 2 })] : [mk("ev_capitan", { pos: 0 }), mk(c[2], { arq: 4, pos: 1 })]);
+    else if (f >= 2) olas.push([mk(c[2], { arq: (z + f + 6) % 8, pos: 0 }), mk(c[0], { arq: (f + 2) % 8, pos: 1 }), mk(c[1], { arq: 7, pos: 2 })]);
+    return { r: Math.min(7, z + 1), a: 2, f: f, t: 0, g: M.indice(Math.min(7, z + 1), 2, f), ge: ge, nombre: Z.n + " · " + EV_FASES[f], lvl: lvl, olas: olas,
+      jefe: f === 4, granJefe: f === 4 && z === 4, trucos: tr, secreta: "ev:" + z + ":" + f, evento: { z: z, f: f, eco: Z.eco }, fondo: Z.fondo, limite: 0,
+      apertura: G.a ? guion(G.a) : null, cierre: G.c ? guion(G.c) : null };
+  };
   M.faseVecino = function (id) {
     var v = M.VECINOS.filter(function (x) { return x.id === id; })[0], zona = D.ZONAS[v.r], a = v.mis.zona, g = M.indice(v.r, 4, 4), ge = g + 8, lvl = 1 + Math.round(ge * M.CFG.nivPorFase), c = zona.comunes;
     function mk(idE, extra) { var o = { id: idE, lvl: lvl, g: 99, ge: ge, trucos: 1, t: 0 }; for (var k in extra) o[k] = extra[k]; return o; }
@@ -945,6 +1013,11 @@
     orfeo:  { corta: 1, txt: "Corta la corriente: aturde a los enemigos comunes y rompe al instante las cargas de los jefes." },
     clara:  { apoyo: 1, limpia: 1, cura: 0.3, egida: 1, bufos: [["defensa", 3]], txt: "Cura un 30 % a todo el grupo, quita los estados alterados, sube la defensa y anula el siguiente golpe que reciba cada uno." },
     nadie:  { ecoeco: 1, txt: "Cada golpe de la ráfaga se repite solo, a media fuerza. Atraviesa escudos." },
+    tam:    { roba: 20, est: ["paralisis", 1, 0.5], txt: "Además roba 20 de ráfaga y puede paralizar." },
+    hollis: { apoyo: 1, bufos: [["defensa", 3], ["ataque", 2]], limpia: ["sueno", "paralisis"], txt: "Cierra filas: sube la defensa y el ataque del grupo y espabila a dormidos y paralizados." },
+    llum:   { limpia: 1, bufos: [["rafaga", 2]], txt: "Además quita los estados alterados y acelera las ráfagas del grupo." },
+    ulric:  { est: ["debilidad", 3, 1], txt: "Deja al enemigo debilitado tres turnos." },
+    eren:   { bbGrupo: 15, txt: "Al acertar, da 15 de ráfaga a cada compañero: no le hace falta una razón para ayudar." },
     polilla:{ roba: 30, txt: "Además roba 30 de ráfaga para sí misma." }
   };
   Object.keys(EF).forEach(function (id) { var h = D.HEROES[id]; if (!h) return; h.bb.ef = EF[id]; if (EF[id].apoyo) h.bb.tipo = "apoyo"; });
@@ -1151,6 +1224,7 @@
       st.enemigos.forEach(function (e, ei) { if (e.vivo) uno(ei); });
       if (k === n - 1) {
         if (a.rg.Brecha) st.enemigos.forEach(function (e) { if (e.vivo) e.brecha = 2; });
+        if (ef.bbGrupo) st.aliados.forEach(function (x, j) { if (x.vivo && j !== plan.i) subirBB(x, ef.bbGrupo); });
         if (ef.corta) st.enemigos.forEach(function (e, ei) { if (!e.vivo) return; if (e.carga) romper(st, ev, e, ei); else if (!e.jefe) { e.aturdido = 1; ev.push({ t: "aturde", i: ei }); } });
         if (plan.sup && a.rg.Despertar) st.enemigos.forEach(function (e, ei) { if (e.vivo && !e.jefe) { e.aturdido = 1; ev.push({ t: "aturde", i: ei }); } });
       }
@@ -1347,7 +1421,10 @@
     function dar(idm, n) { r.mats[idm] = (r.mats[idm] || 0) + n; save.mats[idm] = (save.mats[idm] || 0) + n; }
     if (F.secreta) {
       var sc = M.secreta(F.secreta);
-      if (sc.tipo === "recuerdo") { if (primera) { var ur = save.unidades[sc.eco]; if (ur) ur.res = Math.max(ur.res || 0, 1); save.gemas += 10; r.gemas += 10; save.medallas = (save.medallas || 0) + 1; r.medallas = (r.medallas || 0) + 1; r.recuerdo = sc.eco; } }
+      if (sc.tipo === "evento") { if (primera) {
+          save.gemas += sc.f === 4 ? 20 : 5; r.gemas += sc.f === 4 ? 20 : 5;
+          if (sc.f === 4) { var ecoEv = M.EVENTO.zonas[sc.z].eco; save.medallas = (save.medallas || 0) + 2; r.medallas = (r.medallas || 0) + 2; if (M.unir(save, ecoEv)) { r.seUne = ecoEv; r.seUneNuevo = true; var un = save.unidades[ecoEv]; un.lv = Math.min(M.maxNivel(un, ecoEv), Math.max(1, M.EVENTO.zonas[sc.z].lvl - 2)); } } } }
+      else if (sc.tipo === "recuerdo") { if (primera) { var ur = save.unidades[sc.eco]; if (ur) ur.res = Math.max(ur.res || 0, 1); save.gemas += 10; r.gemas += 10; save.medallas = (save.medallas || 0) + 1; r.medallas = (r.medallas || 0) + 1; r.recuerdo = sc.eco; } }
       else if (sc.tipo === "vecino") { if (primera) { save.medallas = (save.medallas || 0) + 2; r.medallas = (r.medallas || 0) + 2; save.gemas += 15; r.gemas += 15; } }
       else if (sc.tipo === "torre") {
         if (primera) { save.torre = Math.max(save.torre || 0, F.torre); r.torre = F.torre; if (F.torre % 5 === 0) dar("sello_incursion", 1); if (F.torre % 10 === 0) { save.medallas = (save.medallas || 0) + 2; r.medallas = (r.medallas || 0) + 2; } }
