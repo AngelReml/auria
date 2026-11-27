@@ -64,7 +64,7 @@
   // Aspecto despierto: los ecos normales lo estrenan con la quinta estrella. Los de leyenda ya llegan con cinco, así que lo estrenan al recuperar su recuerdo.
   function despierta(id) { var u = S && S.unidades[id]; if (!u) return false; return M.esLeyenda(id) ? (u.res || 0) >= 1 : M.estrellas(id, u) >= 5; }
   function sprite(id, el, pose, despierto, grande) {
-    if (D.ENEMIGOS[id] && D.ENEMIGOS[id].arte) id = D.ENEMIGOS[id].arte;   // criaturas que comparten dibujo con otra
+    if (D.ENEMIGOS[id] && D.ENEMIGOS[id].arte && !hay("bat_" + id)) id = D.ENEMIGOS[id].arte;   // criaturas que comparten dibujo con otra
     var hoja = (despierto && hay("bat_" + id + "_2")) ? "bat_" + id + "_2" : "bat_" + id;
     var d = h("div", { class: "arte" });
     if (hay(hoja)) {
@@ -446,7 +446,7 @@
     var t = V.grado, r = V.region, z = D.ZONAS[r];
     if (V.zona == null || V.zonaDe !== r + "@" + t) { V.zona = zonaActual(r, t); V.zonaDe = r + "@" + t; }
     var grados = h("div", { class: "chips grados", role: "group", "aria-label": "Dificultad" }, M.GRADOS.map(function (g, k) {
-      return h("button", { class: "chip g" + k, type: "button", "aria-pressed": String(t === k), disabled: !M.gradoAbierto(S, r, k), text: g.n, on: function () { V.grado = k; V.zona = null; pintar(); } });
+      return h("button", { class: "chip g" + k, type: "button", "aria-pressed": String(t === k), disabled: !M.gradoAbierto(S, r, k), on: function () { V.grado = k; V.zona = null; pintar(); } }, [hay("ico_grado_" + ["normal", "dificil", "eclipse"][k]) ? icono("ico_grado_" + ["normal", "dificil", "eclipse"][k], "", "") : null, h("span", { text: g.n })]);
     }));
     var img = hay("reg_" + z.id) ? "reg_" + z.id : (hay("map_" + z.id + "_exterior") ? "map_" + z.id + "_exterior" : null);
     var lienzo = h("div", { class: "lienzo" + (img ? "" : " sin") });
@@ -586,7 +586,8 @@
     // lo que gana en cada estrella
     var filas = [3, 4, 5].map(function (n) {
       var rg = M.RASGOS[b.bb.tipo][n], tiene = e >= n;
-      return h("div", { class: "rasgo" + (tiene ? " on" : "") }, [h("b", {}, [estrellas(n), " " + rg.n]), h("span", { text: rg.d })]);
+      var nRg = tiene ? (rg.n === "Temple" ? "ico_temple" : "ico_rasgo_" + rg.n.toLowerCase()) : "ico_rasgo_bloqueado";
+      return h("div", { class: "rasgo" + (tiene ? " on" : "") + (hay(nRg) ? " con-ico" : "") }, [hay(nRg) ? icono(nRg, "", "") : null, h("b", {}, [estrellas(n), " " + rg.n]), h("span", { text: rg.d })]);
     });
     pad.appendChild(h("div", { class: "caja" }, [h("h2", { text: "Qué gana con cada estrella" })].concat(filas).concat([h("p", { class: "tenue", text: "Cada estrella sube además su tope de nivel 20 niveles y su fuerza un 25 %. Con 5 estrellas cambia de aspecto." })])));
     pad.appendChild(huecosEquipo(id));
@@ -609,7 +610,7 @@
           L[1].falta = (S.medallas || 0) < co.medallas; L[1].r = 0; L[1].d += " Salen de los ecos repetidos del Altar, de fundir 4 fragmentos y de vencer jefes por primera vez."; L[2].falta = S.oro < co.oro;
           L.forEach(function (o) { o.mini = 1; }); return rejilla(L, "fila-mini");
         })(),
-        h("button", { class: "btn", type: "button", disabled: !puede, text: puede ? "Subir estrella" : (u.lv < co.nivel ? "Le falta llegar al nivel " + co.nivel : ((S.medallas || 0) < co.medallas ? "Te faltan medallas" : "Te falta oro")), on: function () { if (M.ascender(S, id)) { guardar(); pintar(); } } })]));
+        h("button", { class: "btn", type: "button", disabled: !puede, text: puede ? "Subir estrella" : (u.lv < co.nivel ? "Le falta llegar al nivel " + co.nivel : ((S.medallas || 0) < co.medallas ? "Te faltan medallas" : "Te falta oro")), on: function () { if (M.ascender(S, id)) { guardar(); pintar(); fxPantalla("fxa_estrella", 700); } } })]));
     }
     var solo = en && S.escuadron.length === 1, lleno = !en && S.escuadron.length >= 6;
     pad.appendChild(h("div", { class: "fila" }, [
@@ -840,7 +841,7 @@
     })));
     function llamar(n) {
       var out = []; for (var i = 0; i < n; i++) { var x = modo === "ecos" ? M.invocar(S, rng) : M.invocarEquipo(S, rng); if (!x) break; out.push(x); }
-      guardar(); app.textContent = ""; vAltar(out);
+      guardar(); app.textContent = ""; vAltar(out); fxPantalla("fxa_llamada", 600);
       var ley = out.filter(function (o) { return o.id && o.leyenda; })[0];
       if (ley) aparicion(ley); else if (out.length === 1 && out[0].id) aparicion(out[0]);
     }
@@ -889,7 +890,7 @@
     pad.appendChild(h("div", { class: "caja" }, [h("h2", { text: tope ? "Huerto al máximo" : "Subir el huerto a nivel " + (g.nivel + 1) }),
       h("p", { class: "tenue", text: tope ? "Ya no puede dar más." : "Cuesta un saco de abono (tienes " + ab + "). Cada cosecha pasará a dar " + qn.pocion + " pociones, " + qn.ascua + (qn.ascua > 1 ? " ascuas" : " ascua") + " y " + qn.remedio[0] + " o " + qn.remedio[1] + " remedios, con un " + Math.round(qn.raro * 100) + " % de objeto raro." + (sig ? " El siguiente saco lo entrega el jefe de " + sig.texto + "." : "") }),
       tope ? null : h("button", { class: "btn", type: "button", disabled: !ab, text: ab ? "Abonar" : "Te falta abono", on: function () { if (M.mejorarGranja(S)) { guardar(); pintar(); } } })]));
-    c.appendChild(pad); fondoDe(c, "map_colinas_brezo_exterior", 0.8); marco("Huerto", c);
+    c.appendChild(pad); fondoDe(c, pref("pan_huerto", "map_colinas_brezo_exterior"), 0.8); marco("Huerto", c);
     clearInterval(relojGranja);
     relojGranja = setInterval(function () {
       if (V.n !== "granja") { clearInterval(relojGranja); return; }
@@ -993,7 +994,7 @@
       h("p", { class: "tenue", text: (it.tipo === "arma" ? (it.el ? "Solo para ecos de " + it.el + "." : "La lleva cualquier eco.") : "") + (it.leyenda ? " Arma de leyenda: no se forja, solo sale del arcón del Altar." : it.unico ? " Arma final: solo puede existir una." : "") }),
       receta,
       it.leyenda ? null : h("button", { class: "btn", type: "button", disabled: falta.length > 0, text: falta.length ? (falta[0] === "Solo puede existir una" ? "Ya la tienes" : "Te falta: " + falta.slice(0, 2).join(", ") + (falta.length > 2 ? "..." : "")) : "Forjar",
-        on: function () { if (M.forjar(S, id)) { guardar(); pintar(); } } }),
+        on: function () { if (M.forjar(S, id)) { guardar(); pintar(); fxPantalla("fxa_forja", 600); } } }),
       tengo && ct ? coste(ct) : null,
       !tengo ? null : (ct ? h("button", { class: "btn sec", type: "button", disabled: !M.puedeTemplar(S, id),
         text: "Templar a +" + (M.temple(id) + 1),
@@ -1529,7 +1530,8 @@
         [h("div", { class: "vol" + (e.id.indexOf("eco:") === 0 ? " gira" : "") }, [sprite(e.raid && hay("bat_" + e.id + "_furia") ? e.id + "_furia" : e.id.replace("eco:", ""), e.el, v.pose, false, e.jefe)]), h("div", { class: "hp" }, [medidor(v.hp, e.max)]),
          h("div", { class: "nombre-e" }, [punto(e.el), " " + e.n + " · " + ventaja(e.el) + (e.coraza ? " · coraza" : "") + (e.presencia ? " · pide " + e.presencia + "★" : "")]), insignias(e)]);
       asentar(d, e.id.replace("eco:", ""), "e", e.jefe);
-      if (it) d.appendChild(h("div", { class: "intento p" + it.peligro + " t-" + it.tipo, text: it.txt }));
+      if (it) { var nInt = "ico_int_" + ({ g: "golpe", d: "doble", b: "barrido", ca: "carga", es: "especial", m: "marca", r: "remate", at: "aturdido", c: "cura", G: "guardia", dr: "drena", gr: "grito" }[it.tipo] || "golpe");
+        d.appendChild(h("div", { class: "intento p" + it.peligro + " t-" + it.tipo + (hay(nInt) ? " con-ico" : "") }, [hay(nInt) ? icono(nInt, "", "") : null, h("span", { text: it.txt })])); }
       if (obj && hay("ui_cursor_objetivo")) { d.appendChild(h("div", { class: "mira-obj", style: "background-image:url(" + url("ui_cursor_objetivo") + ")" })); d.classList.add("con-mira"); }
       if (e.carga && v.vivo) { var um = M.umbralRuptura(e), rm = h("div", { class: "ruptura", id: "rup" + i, title: "Hazle daño para romper la carga" }, [h("i")]); rm.firstChild.style.width = Math.min(100, 100 * e.dCarga / um) + "%"; d.appendChild(rm); }
       capas.push([pos[1], d]);
@@ -1778,6 +1780,11 @@
     f.style.backgroundImage = "url(" + url(nombre) + ")"; n.appendChild(f);
     var t = setInterval(function () { k++; if (k >= 6 || !f.isConnected) { clearInterval(t); f.remove(); return; } f.style.backgroundPosition = ((k % 3) * 50) + "% " + (k < 3 ? 0 : 100) + "%"; }, paso);
   }
+  // Efecto animado grande en el centro de la pantalla (forjar, subir de estrella, invocar...).
+  function fxPantalla(nombre, ms) {
+    if (!hay(nombre)) return;
+    var caja = h("div", { class: "fx-pantalla", id: "fxp" + Date.now() }); document.body.appendChild(caja); fxAnim(caja.id, nombre, ms || 600); setTimeout(function () { caja.remove(); }, (ms || 600) + 200);
+  }
   function efecto(id, nombre, color, cls, ms) {
     var n = document.getElementById(id); if (!n) return;
     var f = h("div", { class: "fx " + (hay(nombre) ? "" : "css ") + (cls || "") });
@@ -1860,6 +1867,7 @@
         tajo(df + e.a, col);
         efecto(df + e.a, e.lado === "a" ? "fx_golpe_" + atacante.el.toLowerCase() : "fx_impacto", col);
         FX.golpe(df + e.a, atacante.el, e.el > 1 || e.fuerte || !!enRafaga);
+        if (df === "e" && atacante.el) { C.ultFx = C.ultFx || {}; var tFx = performance.now(); if (!C.ultFx[e.a] || tFx - C.ultFx[e.a] > 220) { C.ultFx[e.a] = tFx; fxAnim(df + e.a, "fxa_golpe_" + String(atacante.el).toLowerCase(), 260); } }
         if (e.parada) { FX.escudo("a" + e.a, true); fxAnim("a" + e.a, "fxa_parada", 420); flotar("a" + e.a, "¡Parada perfecta!", "parada"); var vp = C.vis.a[e.a]; if (vp) { vp.bb = Math.min(200, vp.bb + 30); barraBB(e.a, vp.bb); } }
         else if (e.guardia) FX.escudo("a" + e.a, false);
         if (e.lado === "a" && tgt && tgt.carga) { var rb = document.getElementById("rup" + e.a); if (rb) rb.firstChild.style.width = Math.min(100, 100 * tgt.dCarga / M.umbralRuptura(tgt)) + "%"; }

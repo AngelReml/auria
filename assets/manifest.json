@@ -23,6 +23,24 @@
 "amb_salinas_nombres": {
 "pix": 1
 },
+"arm_cerrojo": {
+"pix": 0
+},
+"arm_el_lapiz": {
+"pix": 0
+},
+"arm_galerna": {
+"pix": 0
+},
+"arm_reloj_tumbado": {
+"pix": 0
+},
+"arm_segunda_estrofa": {
+"pix": 0
+},
+"arm_tarde_entera": {
+"pix": 0
+},
 "atl_ei_arma": {
 "pix": false
 },
@@ -48,6 +66,12 @@
 "pix": 1
 },
 "atl_ico_4": {
+"pix": 1
+},
+"atl_ico_5": {
+"pix": 1
+},
+"atl_ico_6": {
 "pix": 1
 },
 "bat_adivina": {
@@ -268,6 +292,16 @@
 "bat_cirio_andante": {
 "c": 0.627,
 "p": 0.068,
+"pix": 1
+},
+"bat_clara": {
+"c": 0.563,
+"p": 0.056,
+"pix": 1
+},
+"bat_clara_2": {
+"c": 0.667,
+"p": 0.056,
 "pix": 1
 },
 "bat_clarisa": {
@@ -540,6 +574,16 @@
 "p": 0.141,
 "pix": 1
 },
+"bat_ilda": {
+"c": 0.667,
+"p": 0.056,
+"pix": 1
+},
+"bat_ilda_2": {
+"c": 0.754,
+"p": 0.056,
+"pix": 1
+},
 "bat_incensario": {
 "c": 0.451,
 "p": 0.044,
@@ -725,6 +769,16 @@
 "p": 0.068,
 "pix": 1
 },
+"bat_nacar": {
+"c": 0.556,
+"p": 0.056,
+"pix": 1
+},
+"bat_nacar_2": {
+"c": 0.714,
+"p": 0.056,
+"pix": 1
+},
 "bat_nacha": {
 "c": 0.769,
 "p": 0.06,
@@ -733,6 +787,16 @@
 "bat_nacha_2": {
 "c": 0.586,
 "p": 0.102,
+"pix": 1
+},
+"bat_nadie": {
+"c": 0.563,
+"p": 0.056,
+"pix": 1
+},
+"bat_nadie_2": {
+"c": 0.754,
+"p": 0.056,
 "pix": 1
 },
 "bat_nerea": {
@@ -753,6 +817,16 @@
 "bat_nube_2": {
 "c": 0.661,
 "p": 0.045,
+"pix": 1
+},
+"bat_orfeo": {
+"c": 0.778,
+"p": 0.056,
+"pix": 1
+},
+"bat_orfeo_2": {
+"c": 0.54,
+"p": 0.056,
 "pix": 1
 },
 "bat_organillo_tubos": {
@@ -858,6 +932,16 @@
 "bat_rosal_2": {
 "c": 0.54,
 "p": 0.065,
+"pix": 1
+},
+"bat_sabina": {
+"c": 0.563,
+"p": 0.056,
+"pix": 1
+},
+"bat_sabina_2": {
+"c": 0.73,
+"p": 0.056,
 "pix": 1
 },
 "bat_saela": {
@@ -1097,6 +1181,9 @@
 "cor_chispa": {
 "pix": 0
 },
+"cor_clara": {
+"pix": 0
+},
 "cor_clarisa": {
 "pix": 0
 },
@@ -1122,6 +1209,9 @@
 "pix": 0
 },
 "cor_halcon": {
+"pix": 0
+},
+"cor_ilda": {
 "pix": 0
 },
 "cor_kael": {
@@ -1151,13 +1241,22 @@
 "cor_morwen": {
 "pix": 0
 },
+"cor_nacar": {
+"pix": 0
+},
 "cor_nacha": {
+"pix": 0
+},
+"cor_nadie": {
 "pix": 0
 },
 "cor_nerea": {
 "pix": 0
 },
 "cor_nube": {
+"pix": 0
+},
+"cor_orfeo": {
 "pix": 0
 },
 "cor_osval": {
@@ -1170,6 +1269,9 @@
 "pix": 0
 },
 "cor_rosal": {
+"pix": 0
+},
+"cor_sabina": {
 "pix": 0
 },
 "cor_saela": {
@@ -2537,6 +2639,9 @@
 "exp_chispa": {
 "pix": 0
 },
+"exp_clara": {
+"pix": 0
+},
 "exp_clarisa": {
 "pix": 0
 },
@@ -2576,6 +2681,9 @@
 "exp_hulda": {
 "pix": 0
 },
+"exp_ilda": {
+"pix": 0
+},
 "exp_kael": {
 "pix": 0
 },
@@ -2606,7 +2714,13 @@
 "exp_morwen": {
 "pix": 0
 },
+"exp_nacar": {
+"pix": 0
+},
 "exp_nacha": {
+"pix": 0
+},
+"exp_nadie": {
 "pix": 0
 },
 "exp_nerea": {
@@ -2616,6 +2730,9 @@
 "pix": 0
 },
 "exp_odila": {
+"pix": 0
+},
+"exp_orfeo": {
 "pix": 0
 },
 "exp_osval": {
@@ -2631,6 +2748,9 @@
 "pix": 0
 },
 "exp_rosal": {
+"pix": 0
+},
+"exp_sabina": {
 "pix": 0
 },
 "exp_saela": {
@@ -2737,6 +2857,9 @@
 "pix": 1
 },
 "fx_eco_legendario": {
+"pix": 1
+},
+"fx_eco_leyenda": {
 "pix": 1
 },
 "fx_eco_raro": {
@@ -3045,6 +3168,14 @@
 "fxa_secreto": {
 "pix": 1
 },
+"ico_abono": {
+"atl": "atl_ico_5",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
 "ico_amuleto_guardia": {
 "atl": "atl_ico_1",
 "c": 0,
@@ -3052,6 +3183,54 @@
 "pix": 1,
 "r": 0,
 "rows": 10
+},
+"ico_arm_cerrojo": {
+"atl": "atl_ico_6",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
+},
+"ico_arm_el_lapiz": {
+"atl": "atl_ico_6",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
+},
+"ico_arm_galerna": {
+"atl": "atl_ico_6",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
+},
+"ico_arm_reloj_tumbado": {
+"atl": "atl_ico_6",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
+},
+"ico_arm_segunda_estrofa": {
+"atl": "atl_ico_6",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
+},
+"ico_arm_tarde_entera": {
+"atl": "atl_ico_6",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
 },
 "ico_arma_alba_1": {
 "atl": "atl_ico_3",
@@ -3221,6 +3400,22 @@
 "r": 0,
 "rows": 10
 },
+"ico_bono_experiencia": {
+"atl": "atl_ico_5",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
+"ico_cadena": {
+"atl": "atl_ico_5",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
 "ico_candado": {
 "atl": "atl_ico_1",
 "c": 4,
@@ -3268,6 +3463,14 @@
 "pix": 1,
 "r": 0,
 "rows": 10
+},
+"ico_cosecha": {
+"atl": "atl_ico_5",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
 },
 "ico_cristal_rafaga": {
 "atl": "atl_ico_1",
@@ -3340,6 +3543,14 @@
 "pix": 1,
 "r": 1,
 "rows": 10
+},
+"ico_encargos": {
+"atl": "atl_ico_5",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
 },
 "ico_est_ataque_mas": {
 "atl": "atl_ico_1",
@@ -3448,6 +3659,102 @@
 "r": 2,
 "rows": 10
 },
+"ico_experiencia": {
+"atl": "atl_ico_5",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
+"ico_fam_arco": {
+"atl": "atl_ico_5",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
+"ico_fam_daga": {
+"atl": "atl_ico_5",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
+"ico_fam_escudo": {
+"atl": "atl_ico_5",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
+"ico_fam_espada": {
+"atl": "atl_ico_5",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 4
+},
+"ico_fam_instrumento": {
+"atl": "atl_ico_5",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_fam_lanza": {
+"atl": "atl_ico_5",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_fam_mandoble": {
+"atl": "atl_ico_5",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_fam_polvora": {
+"atl": "atl_ico_5",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_fam_puno": {
+"atl": "atl_ico_5",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_fam_truco": {
+"atl": "atl_ico_5",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_fam_vara": {
+"atl": "atl_ico_5",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
 "ico_ficha_arena": {
 "atl": "atl_ico_1",
 "c": 0,
@@ -3502,6 +3809,22 @@
 "cols": 10,
 "pix": 1,
 "r": 0,
+"rows": 4
+},
+"ico_hab_bloqueada": {
+"atl": "atl_ico_5",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_hab_maestra": {
+"atl": "atl_ico_5",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 1,
 "rows": 4
 },
 "ico_incienso": {
@@ -3760,6 +4083,14 @@
 "r": 3,
 "rows": 5
 },
+"ico_leyenda": {
+"atl": "atl_ico_6",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 0,
+"rows": 2
+},
 "ico_llamada_ecos": {
 "atl": "atl_ico_4",
 "c": 8,
@@ -3770,6 +4101,14 @@
 },
 "ico_llamada_equipo": {
 "atl": "atl_ico_4",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 1,
+"rows": 4
+},
+"ico_logros": {
+"atl": "atl_ico_5",
 "c": 9,
 "cols": 10,
 "pix": 1,
@@ -4056,6 +4395,14 @@
 "r": 6,
 "rows": 10
 },
+"ico_nivel": {
+"atl": "atl_ico_5",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
 "ico_oro": {
 "atl": "atl_ico_1",
 "c": 9,
@@ -4079,6 +4426,118 @@
 "pix": 1,
 "r": 7,
 "rows": 10
+},
+"ico_racha": {
+"atl": "atl_ico_5",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_alba": {
+"atl": "atl_ico_5",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_alivio": {
+"atl": "atl_ico_5",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_baluarte": {
+"atl": "atl_ico_5",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_bosque": {
+"atl": "atl_ico_5",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_brasa": {
+"atl": "atl_ico_5",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_compas": {
+"atl": "atl_ico_5",
+"c": 7,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_cuerpo": {
+"atl": "atl_ico_5",
+"c": 8,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_filo": {
+"atl": "atl_ico_5",
+"c": 9,
+"cols": 10,
+"pix": 1,
+"r": 2,
+"rows": 4
+},
+"ico_rama_marea": {
+"atl": "atl_ico_5",
+"c": 0,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
+},
+"ico_rama_ocaso": {
+"atl": "atl_ico_5",
+"c": 1,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
+},
+"ico_rama_rayo": {
+"atl": "atl_ico_5",
+"c": 2,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
+},
+"ico_rama_tormenta": {
+"atl": "atl_ico_5",
+"c": 3,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
+},
+"ico_rango_arena": {
+"atl": "atl_ico_5",
+"c": 4,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
 },
 "ico_rasgo_aliento": {
 "atl": "atl_ico_4",
@@ -4368,6 +4827,14 @@
 "r": 3,
 "rows": 4
 },
+"ico_temple": {
+"atl": "atl_ico_5",
+"c": 5,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
+},
 "ico_tonico": {
 "atl": "atl_ico_1",
 "c": 4,
@@ -4375,6 +4842,14 @@
 "pix": 1,
 "r": 9,
 "rows": 10
+},
+"ico_torre": {
+"atl": "atl_ico_5",
+"c": 6,
+"cols": 10,
+"pix": 1,
+"r": 3,
+"rows": 4
 },
 "ico_trofeo_catedral_eclipse": {
 "atl": "atl_ico_3",
@@ -4587,6 +5062,20 @@
 ],
 "pix": 0
 },
+"ilu_clara": {
+"cab": [
+0.455,
+0.051
+],
+"pix": 0
+},
+"ilu_clara_2": {
+"cab": [
+0.497,
+0.045
+],
+"pix": 0
+},
 "ilu_clarisa": {
 "cab": [
 0.539,
@@ -4741,6 +5230,20 @@
 ],
 "pix": 0
 },
+"ilu_ilda": {
+"cab": [
+0.477,
+0.048
+],
+"pix": 0
+},
+"ilu_ilda_2": {
+"cab": [
+0.49,
+0.045
+],
+"pix": 0
+},
 "ilu_kael": {
 "cab": [
 0.457,
@@ -4874,6 +5377,20 @@
 ],
 "pix": 0
 },
+"ilu_nacar": {
+"cab": [
+0.469,
+0.05
+],
+"pix": 0
+},
+"ilu_nacar_2": {
+"cab": [
+0.501,
+0.045
+],
+"pix": 0
+},
 "ilu_nacha": {
 "cab": [
 0.518,
@@ -4885,6 +5402,20 @@
 "cab": [
 0.463,
 0.002
+],
+"pix": 0
+},
+"ilu_nadie": {
+"cab": [
+0.521,
+0.047
+],
+"pix": 0
+},
+"ilu_nadie_2": {
+"cab": [
+0.485,
+0.05
 ],
 "pix": 0
 },
@@ -4920,6 +5451,20 @@
 "cab": [
 0.52,
 0.05
+],
+"pix": 0
+},
+"ilu_orfeo": {
+"cab": [
+0.468,
+0.051
+],
+"pix": 0
+},
+"ilu_orfeo_2": {
+"cab": [
+0.492,
+0.045
 ],
 "pix": 0
 },
@@ -4983,6 +5528,20 @@
 "cab": [
 0.475,
 0.005
+],
+"pix": 0
+},
+"ilu_sabina": {
+"cab": [
+0.467,
+0.046
+],
+"pix": 0
+},
+"ilu_sabina_2": {
+"cab": [
+0.503,
+0.05
 ],
 "pix": 0
 },
@@ -5307,6 +5866,9 @@
 "pan_altar_ecos": {
 "pix": 0
 },
+"pan_altar_leyenda": {
+"pix": 0
+},
 "pan_archivo": {
 "pix": 0
 },
@@ -5314,6 +5876,9 @@
 "pix": 0
 },
 "pan_arena": {
+"pix": 0
+},
+"pan_bestiario": {
 "pix": 0
 },
 "pan_carga_1": {
@@ -5328,13 +5893,25 @@
 "pan_derrota": {
 "pix": 0
 },
+"pan_diario": {
+"pix": 0
+},
 "pan_eco_perdido": {
+"pix": 0
+},
+"pan_encargos": {
 "pix": 0
 },
 "pan_escuadron": {
 "pix": 0
 },
 "pan_forja_recuerdos": {
+"pix": 0
+},
+"pan_habilidades": {
+"pix": 0
+},
+"pan_huerto": {
 "pix": 0
 },
 "pan_incursion": {
@@ -5352,7 +5929,34 @@
 "pan_titulo": {
 "pix": 0
 },
+"pan_torre": {
+"pix": 0
+},
 "pan_victoria": {
+"pix": 0
+},
+"pla_benet": {
+"pix": 0
+},
+"pla_brina": {
+"pix": 0
+},
+"pla_calixta": {
+"pix": 0
+},
+"pla_hulda": {
+"pix": 0
+},
+"pla_odila": {
+"pix": 0
+},
+"pla_peio": {
+"pix": 0
+},
+"pla_tramoya": {
+"pix": 0
+},
+"pla_ulmo": {
 "pix": 0
 },
 "raf_aina": {
@@ -5400,6 +6004,11 @@
 "p": 0.102,
 "pix": 1
 },
+"raf_clara": {
+"c": 0.82,
+"p": 0.07,
+"pix": 1
+},
 "raf_clarisa": {
 "c": 0.547,
 "p": 0.102,
@@ -5443,6 +6052,11 @@
 "raf_halcon": {
 "c": 0.586,
 "p": 0.102,
+"pix": 1
+},
+"raf_ilda": {
+"c": 0.586,
+"p": 0.07,
 "pix": 1
 },
 "raf_kael": {
@@ -5490,9 +6104,19 @@
 "p": 0.102,
 "pix": 1
 },
+"raf_nacar": {
+"c": 0.672,
+"p": 0.07,
+"pix": 1
+},
 "raf_nacha": {
 "c": 0.578,
 "p": 0.102,
+"pix": 1
+},
+"raf_nadie": {
+"c": 0.555,
+"p": 0.07,
 "pix": 1
 },
 "raf_nerea": {
@@ -5503,6 +6127,11 @@
 "raf_nube": {
 "c": 0.586,
 "p": 0.102,
+"pix": 1
+},
+"raf_orfeo": {
+"c": 0.648,
+"p": 0.07,
 "pix": 1
 },
 "raf_osval": {
@@ -5523,6 +6152,11 @@
 "raf_rosal": {
 "c": 0.523,
 "p": 0.102,
+"pix": 1
+},
+"raf_sabina": {
+"c": 0.648,
+"p": 0.07,
 "pix": 1
 },
 "raf_saela": {
@@ -5694,6 +6328,9 @@
 "ui_barras": {
 "pix": 0
 },
+"ui_bocadillo_vecino": {
+"pix": 0
+},
 "ui_botones": {
 "pix": 0
 },
@@ -5703,7 +6340,22 @@
 "ui_carta_combate": {
 "pix": 0
 },
+"ui_casilla_comun": {
+"pix": 0
+},
+"ui_casilla_legendaria": {
+"pix": 0
+},
+"ui_casilla_poco_comun": {
+"pix": 0
+},
+"ui_casilla_rara": {
+"pix": 0
+},
 "ui_cinta_derrota": {
+"pix": 0
+},
+"ui_cinta_hallazgo": {
 "pix": 0
 },
 "ui_cinta_secreta": {
@@ -5739,6 +6391,9 @@
 "ui_marco_carta_6": {
 "pix": 0
 },
+"ui_marco_carta_leyenda": {
+"pix": 0
+},
 "ui_marco_rafaga": {
 "pix": 0
 },
@@ -5764,6 +6419,9 @@
 "pix": 0
 },
 "ui_separador": {
+"pix": 0
+},
+"ui_sombra_criatura": {
 "pix": 0
 },
 "ui_telon": {

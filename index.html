@@ -717,7 +717,7 @@ body{font-variant-numeric:lining-nums tabular-nums}
 .fxa{position:absolute;left:50%;top:45%;width:150%;aspect-ratio:1;transform:translate(-50%,-50%);background-size:300% 200%;background-position:0 0;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none;z-index:6}
 .campo .amb{position:absolute;left:0;right:0;bottom:0;height:34%;background:center bottom/100% auto no-repeat;image-rendering:pixelated;pointer-events:none;z-index:4}
 .arte.ret{width:100%;height:100%}
-.campo .vel{position:absolute;right:8px;top:8px;z-index:9;min-width:44px;min-height:36px;border-radius:18px;border:1px solid rgba(255,255,255,.35);background:rgba(20,14,30,.65);color:#fff;font:700 14px system-ui}
+.campo .vel{position:absolute;right:8px;top:58px;z-index:9;min-width:44px;min-height:36px;border-radius:18px;border:1px solid rgba(255,255,255,.35);background:rgba(20,14,30,.65);color:#fff;font:700 14px system-ui}
 .campo .vel.on{background:#ffd76a;color:#2a1a05;border-color:#ffd76a}
 .premios-caja{display:block;text-align:center}.premios-caja .premios{width:100%}.premios-caja .premios-mas{margin-top:8px}
 .premios-caja.con-estrella .premios>:first-child{transform:scale(1.18);margin:6px 10px;box-shadow:0 0 18px rgba(255,215,106,.55)}
@@ -727,6 +727,11 @@ body{font-variant-numeric:lining-nums tabular-nums}
 @keyframes pulsoRup{from{box-shadow:0 0 4px #ffd76a}to{box-shadow:0 0 16px #fff}}
 .num.chispa{font-size:36px}
 .rotulo.jefe{font-size:30px;color:#ffd76a;text-shadow:0 3px 0 #000,0 0 18px #c0392b}
+.intento.con-ico{display:inline-flex;align-items:center;gap:4px}.intento .ico{width:16px;height:16px;flex:none}
+.rasgo.con-ico{display:grid;grid-template-columns:34px 1fr;column-gap:8px;align-items:center}.rasgo.con-ico>.ico{grid-row:1 / span 2;width:32px;height:32px}
+.chips.grados .chip{display:inline-flex;align-items:center;gap:6px}.chips.grados .chip .ico{width:20px;height:20px}
+.fx-pantalla{position:fixed;left:50%;top:42%;width:min(70vw,320px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:99}
+.fx-pantalla .fxa{width:100%;top:50%}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01s!important;transition:none!important}}
 </style>
 </head>
